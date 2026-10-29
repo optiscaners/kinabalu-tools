@@ -2,6 +2,8 @@
 
 Python tools for CAN, LIN, signal lists and code generation.
 
+Detailed documentation: [docs/](docs/index.md)
+
 ## Installation
 
 ```sh
