@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kinabalu-tools"
+description = "Python tools for CAN, LIN, signal lists and code generation"
+version = "0.0.1"
+readme = "README.md"
+requires-python = ">=3.12"
+
+dependencies = [
+    "python-can>=4.0",
+]
+
+[project.scripts]
+voice_to_can = "k6u.can.voice_to_can:main"
+can_send_trc = "k6u.can.can_send_trc:main"
+firmware_duplicates = "k6u.tools.firmware_duplicates:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "ruff>=0.6",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["k6u*"]
+
+[tool.setuptools.package-data]
+"k6u" = ["data/*.wav"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]

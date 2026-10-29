@@ -1,0 +1,24 @@
+{
+    "TrcDir": "traces",
+    "TrcFile": null,
+    "CanBusses": [
+        {
+            "Hardware": "HW_A",
+            "Id": 1,
+            "BaudRate": 500000,
+            "TrcFile": "hw_a_classic.trc"
+        },
+        {
+            "Hardware": "HW_B",
+            "Id": 2,
+            "BaudRate": 500000,
+            "DataBaudRate": 1000000,
+            "TrcFile": "hw_b_fd.trc"
+        }
+    ],
+    "Profiles": {
+        "all": "all",
+        "a": ["HW_A"],
+        "b": ["HW_B"]
+    }
+}
