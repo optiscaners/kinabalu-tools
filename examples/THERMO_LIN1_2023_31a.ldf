@@ -1,0 +1,978 @@
+/* CHECKSUM={7CDE073ED6EC51E5CDA8D6F24E6F15995ADDFC14} */ 
+/* ************************************************************************** */
+/*                                                                            */
+/*                              Daimler Truck AG                              */
+/*                            All rights reserved                             */
+/*                                                                            */
+/* ************************************************************************** */
+/*                                                                            */
+/*  Description:   LIN Description file                                       */
+/*  Network:       THERMO_LIN1                                                */
+/*  Release:       2023-31a                                                   */
+/*                                                                            */
+/*  Engineer:      Bianda, TP/XMS; W. Griebel EVOUL                           */
+/*  Creation Date: 2023-08-04                                                 */
+/*  Status:        RELEASED                                                   */
+/*  XDIS-Database: CVD-Database                                               */
+/*                                                                            */
+/* ************************************************************************** */
+
+
+LIN_description_file;
+LIN_protocol_version = "2.1";
+LIN_language_version = "2.1";
+LIN_speed = 19.200 kbps;
+
+Channel_name = "THERMO_LIN1";
+
+Nodes {
+	Master : TIO_LIN1_Master, 5.000 ms, 0.200 ms;
+	Slaves : CABP, CPH1, ERC, EXV, FRVC1, FRVC5, P_T_SENSOR;
+}
+
+
+Signals {
+	ASC_TIO_ERC : 2, 3, TIO_LIN1_Master, ERC;
+	ActPosnSave_Rq_TIO_FRVC1 : 1, 0, TIO_LIN1_Master, FRVC1;
+	ActPosnSave_Rq_TIO_FRVC5 : 1, 0, TIO_LIN1_Master, FRVC5;
+	ActlCurr_Cval_CABP : 8, 255, CABP, TIO_LIN1_Master;
+	AllPosnAdj_Stat_FRVC1 : 1, 0, FRVC1, TIO_LIN1_Master;
+	AllPosnAdj_Stat_FRVC5 : 1, 0, FRVC5, TIO_LIN1_Master;
+	BlockFlt_Stat_CABP : 2, 3, CABP, TIO_LIN1_Master;
+	CmprOn_Rq_TIO_ERC : 2, 3, TIO_LIN1_Master, ERC;
+	CmprOprtnV2_Stat_ERC : 3, 7, ERC, TIO_LIN1_Master;
+	CmprSpdTrgtV2_Rq_TIO_ERC : 8, 255, TIO_LIN1_Master, ERC;
+	CmprSpdV2_Cval_ERC : 8, 255, ERC, TIO_LIN1_Master;
+	ComFlt_ERC : 1, 0, ERC, TIO_LIN1_Master;
+	CoolntInTemp_Cval_CPH_CAB1 : 8, 255, CPH1, TIO_LIN1_Master;
+	CoolntOutTemp_Cval_CPH_CAB1 : 8, 255, CPH1, TIO_LIN1_Master;
+	CoolntPreHt_Stat_CPH_CAB1 : 4, 15, CPH1, TIO_LIN1_Master;
+	CoolntTemp_Rq_TIO_CPH_CAB1 : 8, 255, TIO_LIN1_Master, CPH1;
+	CptProtn_Stat_CPH_CAB1 : 2, 3, CPH1, TIO_LIN1_Master;
+	Crash_Lin : 2, 3, TIO_LIN1_Master, ERC;
+	CurrLimFlt_ERC : 1, 0, ERC, TIO_LIN1_Master;
+	DCDCCnvrFai_Stat_CPH_CAB1 : 2, 3, CPH1, TIO_LIN1_Master;
+	DIAG_Stat_Aliv_St_Cnt_ERC : 4, 0, ERC, TIO_LIN1_Master;
+	DIAG_Stat_Data1_ERC : 6, 0, ERC, TIO_LIN1_Master;
+	DIAG_Stat_Data2_ERC : 6, 0, ERC, TIO_LIN1_Master;
+	DIAG_Stat_Data3_ERC : 6, 0, ERC, TIO_LIN1_Master;
+	DIAG_Stat_Data4_ERC : 6, 0, ERC, TIO_LIN1_Master;
+	DIAG_Stat_Data5_ERC : 6, 0, ERC, TIO_LIN1_Master;
+	DIAG_Stat_Data6_ERC : 6, 0, ERC, TIO_LIN1_Master;
+	DIAG_Stat_Data7_ERC : 6, 0, ERC, TIO_LIN1_Master;
+	DIAG_Stat_Data8_ERC : 6, 0, ERC, TIO_LIN1_Master;
+	DIAG_Stat_Idx_Actl_ERC : 6, 0, ERC, TIO_LIN1_Master;
+	DIAG_Stat_Num_Max_ERC : 6, 0, ERC, TIO_LIN1_Master;
+	Dischrg_Rq_TIO_CPH_CAB1 : 1, 0, TIO_LIN1_Master, CPH1;
+	Dischrg_Stat_CPH_CAB1 : 4, 15, CPH1, TIO_LIN1_Master;
+	DryRun_Flt_Stat_CABP : 2, 3, CABP, TIO_LIN1_Master;
+	EXV_Fault_Stat : 4, 15, EXV, TIO_LIN1_Master;
+	EXV_OverTemp_Warn : 2, 3, EXV, TIO_LIN1_Master;
+	EXV_Pos : 10, 1023, EXV, TIO_LIN1_Master;
+	EXV_Run_Stat : 2, 3, EXV, TIO_LIN1_Master;
+	EXV_SpdMd : 3, 7, EXV, TIO_LIN1_Master;
+	EXV_Stall_Dtct_Stat : 2, 3, EXV, TIO_LIN1_Master;
+	EXV_Version : 3, 7, EXV, TIO_LIN1_Master;
+	EXV_Volt_Stat : 2, 3, EXV, TIO_LIN1_Master;
+	EXV_curInit_Stat : 2, 3, EXV, TIO_LIN1_Master;
+	ElctrcFlt_Stat_CABP : 2, 3, CABP, TIO_LIN1_Master;
+	ElctrcTemp_Cval_CABP : 8, 255, CABP, TIO_LIN1_Master;
+	EltlErr_Stat_FRVC1 : 1, 0, FRVC1, TIO_LIN1_Master;
+	EltlErr_Stat_FRVC5 : 1, 0, FRVC5, TIO_LIN1_Master;
+	Err_Stat_FRVC1 : 4, 15, FRVC1, TIO_LIN1_Master;
+	Err_Stat_FRVC5 : 4, 15, FRVC5, TIO_LIN1_Master;
+	ExtPowerSupFlt_ERC : 1, 0, ERC, TIO_LIN1_Master;
+	GrpErr_Stat_FRVC1 : 1, 0, FRVC1, TIO_LIN1_Master;
+	GrpErr_Stat_FRVC5 : 1, 0, FRVC5, TIO_LIN1_Master;
+	HVAC_EXV_Init_Dir : 2, 3, TIO_LIN1_Master, EXV;
+	HVAC_EXV_Init_Rq : 3, 7, TIO_LIN1_Master, EXV;
+	HVAC_EXV_Move_Enbl : 2, 3, TIO_LIN1_Master, EXV;
+	HVAC_EXV_Set_Rq : 10, 1023, TIO_LIN1_Master, EXV;
+	HVAC_EXV_SpdMd_Rq : 3, 7, TIO_LIN1_Master, EXV;
+	HVAC_EXV_Stall_Dtct_Enbl : 2, 3, TIO_LIN1_Master, EXV;
+	HVAC_EXV_Trq_Md_Rq : 3, 7, TIO_LIN1_Master, EXV;
+	HVCurr_Cval_CPH_CAB1 : 8, 255, CPH1, TIO_LIN1_Master;
+	HVOutOfRngWarn_Stat_CPH_CAB1 : 2, 3, CPH1, TIO_LIN1_Master;
+	HVVolt_Cval_CPH_CAB1 : 16, 65535, CPH1, TIO_LIN1_Master;
+	HV_DCCurr_Cval_ERC : 8, 255, ERC, TIO_LIN1_Master;
+	HV_PhaseCurr_Cval_ERC : 7, 127, ERC, TIO_LIN1_Master;
+	HV_VoltLimFlt_ERC : 1, 0, ERC, TIO_LIN1_Master;
+	HV_Volt_Cval_ERC : 8, 255, ERC, TIO_LIN1_Master;
+	HiCurrFai_Stat_CPH_CAB1 : 2, 3, CPH1, TIO_LIN1_Master;
+	HotSptFai_Stat_CPH_CAB1 : 2, 3, CPH1, TIO_LIN1_Master;
+	HtEnbl_Rq_TIO_CPH_CAB1 : 1, 0, TIO_LIN1_Master, CPH1;
+	IGBTDrvFai_Stat_CPH_CAB1 : 2, 3, CPH1, TIO_LIN1_Master;
+	InfVarPosn_Cval_FRVC1 : 16, 65535, FRVC1, TIO_LIN1_Master;
+	InfVarPosn_Cval_FRVC5 : 16, 65535, FRVC5, TIO_LIN1_Master;
+	InfVarPosn_Rq_TIO_FRVC1 : 16, 65535, TIO_LIN1_Master, FRVC1;
+	InfVarPosn_Rq_TIO_FRVC5 : 16, 65535, TIO_LIN1_Master, FRVC5;
+	IntFai_Stat_CPH_CAB1 : 2, 3, CPH1, TIO_LIN1_Master;
+	IntPowerSupFlt_ERC : 1, 0, ERC, TIO_LIN1_Master;
+	InvTemp_Cval_ERC : 8, 255, ERC, TIO_LIN1_Master;
+	LVOutOfRngWarn_Stat_CPH_CAB1 : 2, 3, CPH1, TIO_LIN1_Master;
+	LoVolt_Cval_CABP : 8, 255, CABP, TIO_LIN1_Master;
+	MechBreakErr_Stat_FRVC1 : 1, 0, FRVC1, TIO_LIN1_Master;
+	MechBreakErr_Stat_FRVC5 : 1, 0, FRVC5, TIO_LIN1_Master;
+	Mon_Stat_CABP : 2, 3, CABP, TIO_LIN1_Master;
+	Move_Stat_FRVC1 : 4, 15, FRVC1, TIO_LIN1_Master;
+	Move_Stat_FRVC5 : 4, 15, FRVC5, TIO_LIN1_Master;
+	OverCurrFlt_Stat_CABP : 2, 3, CABP, TIO_LIN1_Master;
+	OverHeatWarn_Stat_CPH_CAB1 : 2, 3, CPH1, TIO_LIN1_Master;
+	OverTempErr_Stat_FRVC1 : 1, 0, FRVC1, TIO_LIN1_Master;
+	OverTempErr_Stat_FRVC5 : 1, 0, FRVC5, TIO_LIN1_Master;
+	OverTempFlt_Stat_CABP : 2, 3, CABP, TIO_LIN1_Master;
+	OverTempWarn_Stat_FRVC1 : 1, 0, FRVC1, TIO_LIN1_Master;
+	OverTempWarn_Stat_FRVC5 : 1, 0, FRVC5, TIO_LIN1_Master;
+	OverVoltErr_Stat_FRVC1 : 1, 0, FRVC1, TIO_LIN1_Master;
+	OverVoltErr_Stat_FRVC5 : 1, 0, FRVC5, TIO_LIN1_Master;
+	PWM_Stat_CABP : 2, 3, CABP, TIO_LIN1_Master;
+	P_T_Sens_ChkSum_Err : 1, 0, P_T_SENSOR, TIO_LIN1_Master;
+	P_T_Sens_CoolPress : 12, 4095, P_T_SENSOR, TIO_LIN1_Master;
+	P_T_Sens_CoolTemp : 12, 4095, P_T_SENSOR, TIO_LIN1_Master;
+	P_T_Sens_FailTest_Compl : 1, 0, P_T_SENSOR, TIO_LIN1_Master;
+	P_T_Sens_Global_Err : 1, 0, P_T_SENSOR, TIO_LIN1_Master;
+	P_T_Sens_IntTemp : 12, 4095, P_T_SENSOR, TIO_LIN1_Master;
+	PerctSpd_Cval_CABP : 8, 255, CABP, TIO_LIN1_Master;
+	Perct_Cval_CPH_CAB1 : 8, 255, CPH1, TIO_LIN1_Master;
+	Perct_Rq_TIO_CPH_CAB1 : 8, 255, TIO_LIN1_Master, CPH1;
+	PosSnaErr_Stat_FRVC1 : 1, 0, FRVC1, TIO_LIN1_Master;
+	PosSnaErr_Stat_FRVC5 : 1, 0, FRVC5, TIO_LIN1_Master;
+	PostRunMode_CABP : 3, 0, CABP, TIO_LIN1_Master;
+	PowerCons_Cval_ERC : 8, 255, ERC, TIO_LIN1_Master;
+	RefRunEnbl_Rq_TIO_FRVC1 : 2, 3, TIO_LIN1_Master, FRVC1;
+	RefRunEnbl_Rq_TIO_FRVC5 : 2, 3, TIO_LIN1_Master, FRVC5;
+	RefRunErr_Stat_FRVC1 : 1, 0, FRVC1, TIO_LIN1_Master;
+	RefRunErr_Stat_FRVC5 : 1, 0, FRVC5, TIO_LIN1_Master;
+	RefRun_Stat_FRVC1 : 1, 0, FRVC1, TIO_LIN1_Master;
+	RefRun_Stat_FRVC5 : 1, 0, FRVC5, TIO_LIN1_Master;
+	RsErr_Cval_CABP : 1, 0, CABP, TIO_LIN1_Master;
+	RsErr_ERC : 1, 0, ERC, TIO_LIN1_Master;
+	RsErr_EXV : 1, 0, EXV, TIO_LIN1_Master;
+	RsErr_FRVC1 : 1, 0, FRVC1, TIO_LIN1_Master;
+	RsErr_FRVC5 : 1, 0, FRVC5, TIO_LIN1_Master;
+	RsErr_P_T_SENSOR : 1, 0, P_T_SENSOR, TIO_LIN1_Master;
+	RsErr_Stat_CPH_CAB1 : 1, 0, CPH1, TIO_LIN1_Master;
+	Rst_Rq_TIO_ERC : 2, 3, TIO_LIN1_Master, ERC;
+	SemiConductSwRq_TIO_CPH_CAB1 : 2, 3, TIO_LIN1_Master, CPH1;
+	SemiConductSwRq_TIO_ERC : 2, 3, TIO_LIN1_Master, ERC;
+	SemiConductSw_Stat_CPH_CAB1 : 2, 3, CPH1, TIO_LIN1_Master;
+	SemiConductSw_Stat_ERC : 2, 3, ERC, TIO_LIN1_Master;
+	ShtdnExcTrqStallFlt_ERC : 1, 0, ERC, TIO_LIN1_Master;
+	ShtdnSensFlt_ERC : 1, 0, ERC, TIO_LIN1_Master;
+	ShtdnShrtCrcFlt_ERC : 1, 0, ERC, TIO_LIN1_Master;
+	SpVoltFlt_Stat_CABP : 2, 3, CABP, TIO_LIN1_Master;
+	StepPosn_Stat_FRVC1 : 4, 15, FRVC1, TIO_LIN1_Master;
+	StepPosn_Stat_FRVC5 : 4, 15, FRVC5, TIO_LIN1_Master;
+	TempExcFlt_ERC : 1, 0, ERC, TIO_LIN1_Master;
+	TempLimBoostFlt_ERC : 1, 0, ERC, TIO_LIN1_Master;
+	TempSensFai_Stat_CPH_CAB1 : 2, 3, CPH1, TIO_LIN1_Master;
+	TrgtPerctSpd_Cval_CABP : 8, 255, CABP, TIO_LIN1_Master;
+	TrgtPerctSpd_Rq_CABP : 8, 255, TIO_LIN1_Master, CABP;
+	TrqExcFlt_ERC : 1, 0, ERC, TIO_LIN1_Master;
+	UndrVoltErr_Stat_FRVC1 : 1, 0, FRVC1, TIO_LIN1_Master;
+	UndrVoltErr_Stat_FRVC5 : 1, 0, FRVC5, TIO_LIN1_Master;
+	UnexpBlkErr_Stat_FRVC1 : 1, 0, FRVC1, TIO_LIN1_Master;
+	UnexpBlkErr_Stat_FRVC5 : 1, 0, FRVC5, TIO_LIN1_Master;
+	WakeUp_Stat_FRVC1 : 2, 3, FRVC1, TIO_LIN1_Master;
+	WakeUp_Stat_FRVC5 : 2, 3, FRVC5, TIO_LIN1_Master;
+	WakeupStat_EXV : 2, 3, EXV, TIO_LIN1_Master;
+	Wakeup_Stat_CABP : 2, 3, CABP, TIO_LIN1_Master;
+	Wakeup_Stat_ERC : 2, 3, ERC, TIO_LIN1_Master;
+}
+
+
+Diagnostic_signals {
+	MasterReqB0:8,0;
+	MasterReqB1:8,0;
+	MasterReqB2:8,0;
+	MasterReqB3:8,0;
+	MasterReqB4:8,0;
+	MasterReqB5:8,0;
+	MasterReqB6:8,0;
+	MasterReqB7:8,0;
+	SlaveRespB0:8,0;
+	SlaveRespB1:8,0;
+	SlaveRespB2:8,0;
+	SlaveRespB3:8,0;
+	SlaveRespB4:8,0;
+	SlaveRespB5:8,0;
+	SlaveRespB6:8,0;
+	SlaveRespB7:8,0;
+}
+
+Frames {
+	ERC_Frm2 : 7, ERC, 8 {
+		SemiConductSw_Stat_ERC, 0;
+	}
+	FRVC1_Rq : 10, TIO_LIN1_Master, 8 {
+		InfVarPosn_Rq_TIO_FRVC1, 0;
+		RefRunEnbl_Rq_TIO_FRVC1, 16;
+		ActPosnSave_Rq_TIO_FRVC1, 18;
+	}
+	FRVC1_Cval : 11, FRVC1, 8 {
+		StepPosn_Stat_FRVC1, 0;
+		Move_Stat_FRVC1, 4;
+		Err_Stat_FRVC1, 8;
+		EltlErr_Stat_FRVC1, 12;
+		UndrVoltErr_Stat_FRVC1, 13;
+		OverVoltErr_Stat_FRVC1, 14;
+		OverTempErr_Stat_FRVC1, 15;
+		MechBreakErr_Stat_FRVC1, 16;
+		UnexpBlkErr_Stat_FRVC1, 17;
+		RefRunErr_Stat_FRVC1, 18;
+		GrpErr_Stat_FRVC1, 19;
+		PosSnaErr_Stat_FRVC1, 20;
+		RefRun_Stat_FRVC1, 21;
+		AllPosnAdj_Stat_FRVC1, 22;
+		OverTempWarn_Stat_FRVC1, 23;
+		InfVarPosn_Cval_FRVC1, 24;
+		RsErr_FRVC1, 61;
+		WakeUp_Stat_FRVC1, 62;
+	}
+	ERC_Rq : 16, TIO_LIN1_Master, 8 {
+		CmprSpdTrgtV2_Rq_TIO_ERC, 0;
+		CmprOn_Rq_TIO_ERC, 8;
+		Rst_Rq_TIO_ERC, 10;
+		ASC_TIO_ERC, 12;
+		Crash_Lin, 14;
+		SemiConductSwRq_TIO_ERC, 16;
+	}
+	FRVC5_Cval : 17, FRVC5, 8 {
+		StepPosn_Stat_FRVC5, 0;
+		Move_Stat_FRVC5, 4;
+		Err_Stat_FRVC5, 8;
+		EltlErr_Stat_FRVC5, 12;
+		UndrVoltErr_Stat_FRVC5, 13;
+		OverVoltErr_Stat_FRVC5, 14;
+		OverTempErr_Stat_FRVC5, 15;
+		MechBreakErr_Stat_FRVC5, 16;
+		UnexpBlkErr_Stat_FRVC5, 17;
+		RefRunErr_Stat_FRVC5, 18;
+		GrpErr_Stat_FRVC5, 19;
+		PosSnaErr_Stat_FRVC5, 20;
+		RefRun_Stat_FRVC5, 21;
+		AllPosnAdj_Stat_FRVC5, 22;
+		OverTempWarn_Stat_FRVC5, 23;
+		InfVarPosn_Cval_FRVC5, 24;
+		RsErr_FRVC5, 61;
+		WakeUp_Stat_FRVC5, 62;
+	}
+	P_T_SENS_Frm : 22, P_T_SENSOR, 5 {
+		P_T_Sens_CoolPress, 0;
+		P_T_Sens_CoolTemp, 12;
+		P_T_Sens_IntTemp, 24;
+		P_T_Sens_Global_Err, 36;
+		P_T_Sens_ChkSum_Err, 37;
+		RsErr_P_T_SENSOR, 38;
+		P_T_Sens_FailTest_Compl, 39;
+	}
+	CPH_CAB1_C01 : 24, CPH1, 8 {
+		CoolntPreHt_Stat_CPH_CAB1, 0;
+		SemiConductSw_Stat_CPH_CAB1, 4;
+		CoolntInTemp_Cval_CPH_CAB1, 8;
+		CoolntOutTemp_Cval_CPH_CAB1, 16;
+		HVCurr_Cval_CPH_CAB1, 24;
+		HVVolt_Cval_CPH_CAB1, 32;
+		Perct_Cval_CPH_CAB1, 48;
+		Dischrg_Stat_CPH_CAB1, 56;
+	}
+	ERC_Frm1 : 31, ERC, 8 {
+		CmprSpdV2_Cval_ERC, 0;
+		PowerCons_Cval_ERC, 8;
+		HV_DCCurr_Cval_ERC, 16;
+		HV_Volt_Cval_ERC, 24;
+		InvTemp_Cval_ERC, 32;
+		HV_PhaseCurr_Cval_ERC, 40;
+		RsErr_ERC, 47;
+		TempLimBoostFlt_ERC, 48;
+		CurrLimFlt_ERC, 49;
+		HV_VoltLimFlt_ERC, 50;
+		TempExcFlt_ERC, 51;
+		TrqExcFlt_ERC, 52;
+		ComFlt_ERC, 53;
+		ExtPowerSupFlt_ERC, 54;
+		IntPowerSupFlt_ERC, 55;
+		ShtdnSensFlt_ERC, 56;
+		ShtdnShrtCrcFlt_ERC, 57;
+		ShtdnExcTrqStallFlt_ERC, 58;
+		CmprOprtnV2_Stat_ERC, 59;
+		Wakeup_Stat_ERC, 62;
+	}
+	CPH_CAB1_Rq : 35, TIO_LIN1_Master, 8 {
+		Perct_Rq_TIO_CPH_CAB1, 0;
+		CoolntTemp_Rq_TIO_CPH_CAB1, 8;
+		HtEnbl_Rq_TIO_CPH_CAB1, 27;
+		Dischrg_Rq_TIO_CPH_CAB1, 28;
+		SemiConductSwRq_TIO_CPH_CAB1, 29;
+	}
+	CPH_CAB1_C02 : 40, CPH1, 8 {
+		RsErr_Stat_CPH_CAB1, 0;
+		CptProtn_Stat_CPH_CAB1, 1;
+		HVOutOfRngWarn_Stat_CPH_CAB1, 3;
+		LVOutOfRngWarn_Stat_CPH_CAB1, 5;
+		OverHeatWarn_Stat_CPH_CAB1, 14;
+		HotSptFai_Stat_CPH_CAB1, 16;
+		TempSensFai_Stat_CPH_CAB1, 22;
+		IGBTDrvFai_Stat_CPH_CAB1, 24;
+		HiCurrFai_Stat_CPH_CAB1, 26;
+		IntFai_Stat_CPH_CAB1, 28;
+		DCDCCnvrFai_Stat_CPH_CAB1, 30;
+	}
+	FRVC5_Rq : 47, TIO_LIN1_Master, 8 {
+		InfVarPosn_Rq_TIO_FRVC5, 0;
+		RefRunEnbl_Rq_TIO_FRVC5, 16;
+		ActPosnSave_Rq_TIO_FRVC5, 18;
+	}
+	DIAG_Stat_ERC_Frm1 : 48, ERC, 8 {
+		DIAG_Stat_Aliv_St_Cnt_ERC, 0;
+		DIAG_Stat_Num_Max_ERC, 4;
+		DIAG_Stat_Idx_Actl_ERC, 10;
+		DIAG_Stat_Data1_ERC, 16;
+		DIAG_Stat_Data2_ERC, 22;
+		DIAG_Stat_Data3_ERC, 28;
+		DIAG_Stat_Data4_ERC, 34;
+		DIAG_Stat_Data5_ERC, 40;
+		DIAG_Stat_Data6_ERC, 46;
+		DIAG_Stat_Data7_ERC, 52;
+		DIAG_Stat_Data8_ERC, 58;
+	}
+	EXV_Frm : 55, EXV, 8 {
+		EXV_Pos, 0;
+		EXV_Version, 10;
+		EXV_Run_Stat, 16;
+		EXV_curInit_Stat, 18;
+		EXV_Fault_Stat, 20;
+		EXV_Volt_Stat, 24;
+		EXV_OverTemp_Warn, 26;
+		EXV_SpdMd, 32;
+		EXV_Stall_Dtct_Stat, 35;
+		WakeupStat_EXV, 61;
+		RsErr_EXV, 63;
+	}
+	CABP_Cval : 56, CABP, 8 {
+		TrgtPerctSpd_Cval_CABP, 0;
+		PerctSpd_Cval_CABP, 8;
+		LoVolt_Cval_CABP, 16;
+		ElctrcTemp_Cval_CABP, 24;
+		ActlCurr_Cval_CABP, 32;
+		Wakeup_Stat_CABP, 40;
+		Mon_Stat_CABP, 42;
+		PWM_Stat_CABP, 44;
+		OverTempFlt_Stat_CABP, 46;
+		OverCurrFlt_Stat_CABP, 48;
+		DryRun_Flt_Stat_CABP, 50;
+		SpVoltFlt_Stat_CABP, 52;
+		BlockFlt_Stat_CABP, 54;
+		ElctrcFlt_Stat_CABP, 56;
+		PostRunMode_CABP, 58;
+		RsErr_Cval_CABP, 61;
+	}
+	CABP_Rq : 57, TIO_LIN1_Master, 8 {
+		TrgtPerctSpd_Rq_CABP, 0;
+	}
+	HVAC_EXV_Rq_Frm : 58, TIO_LIN1_Master, 8 {
+		HVAC_EXV_Set_Rq, 0;
+		HVAC_EXV_Trq_Md_Rq, 10;
+		HVAC_EXV_Move_Enbl, 16;
+		HVAC_EXV_Stall_Dtct_Enbl, 18;
+		HVAC_EXV_Init_Rq, 24;
+		HVAC_EXV_SpdMd_Rq, 27;
+		HVAC_EXV_Init_Dir, 30;
+	}
+}
+
+
+Diagnostic_frames {
+	MasterReq : 60 {
+		MasterReqB0, 0;
+		MasterReqB1, 8;
+		MasterReqB2, 16;
+		MasterReqB3, 24;
+		MasterReqB4, 32;
+		MasterReqB5, 40;
+		MasterReqB6, 48;
+		MasterReqB7, 56;
+	}
+	SlaveResp : 61 {
+		SlaveRespB0, 0;
+		SlaveRespB1, 8;
+		SlaveRespB2, 16;
+		SlaveRespB3, 24;
+		SlaveRespB4, 32;
+		SlaveRespB5, 40;
+		SlaveRespB6, 48;
+		SlaveRespB7, 56;
+	}
+}
+
+Node_attributes {
+	CABP {
+		LIN_protocol = "2.1";
+		configured_NAD = 0x4F;
+		initial_NAD = 0x4F;
+		product_id = 0x0136, 0x0074, 0x03;
+		response_error = RsErr_Cval_CABP;
+		P2_min = 50 ms;
+		ST_min = 0 ms;
+		N_As_timeout = 1000 ms;
+		N_Cr_timeout = 1000 ms;
+		configurable_frames {
+			CABP_Rq;
+			CABP_Cval;
+		}
+	}
+	CPH1 {
+		LIN_protocol = "2.1";
+		configured_NAD = 0x4C;
+		initial_NAD = 0x4C;
+		product_id = 0x0136, 0x0074, 0x03;
+		response_error = RsErr_Stat_CPH_CAB1;
+		P2_min = 50 ms;
+		ST_min = 0 ms;
+		N_As_timeout = 1000 ms;
+		N_Cr_timeout = 1000 ms;
+		configurable_frames {
+			CPH_CAB1_Rq;
+			CPH_CAB1_C01;
+			CPH_CAB1_C02;
+		}
+	}
+	ERC {
+		LIN_protocol = "2.1";
+		configured_NAD = 0x01;
+		initial_NAD = 0x01;
+		product_id = 0x0136, 0x0074, 0x03;
+		response_error = RsErr_ERC;
+		P2_min = 50 ms;
+		ST_min = 0 ms;
+		N_As_timeout = 1000 ms;
+		N_Cr_timeout = 1000 ms;
+		configurable_frames {
+			ERC_Rq;
+			DIAG_Stat_ERC_Frm1;
+			ERC_Frm1;
+			ERC_Frm2;
+		}
+	}
+	EXV {
+		LIN_protocol = "2.1";
+		configured_NAD = 0x05;
+		initial_NAD = 0x05;
+		product_id = 0x0124, 0x0001, 0x00;
+		response_error = RsErr_EXV;
+		P2_min = 50 ms;
+		ST_min = 0 ms;
+		configurable_frames {
+			EXV_Frm;
+			HVAC_EXV_Rq_Frm;
+		}
+	}
+	FRVC1 {
+		LIN_protocol = "2.1";
+		configured_NAD = 0x02;
+		initial_NAD = 0x02;
+		product_id = 0x0000, 0x0000, 0x00;
+		response_error = RsErr_FRVC1;
+		P2_min = 50 ms;
+		ST_min = 0 ms;
+		N_As_timeout = 1000 ms;
+		N_Cr_timeout = 1000 ms;
+		configurable_frames {
+			FRVC1_Rq;
+			FRVC1_Cval;
+		}
+	}
+	FRVC5 {
+		LIN_protocol = "2.1";
+		configured_NAD = 0x04;
+		initial_NAD = 0x04;
+		product_id = 0x0000, 0x0000, 0x00;
+		response_error = RsErr_FRVC5;
+		P2_min = 50 ms;
+		ST_min = 0 ms;
+		N_As_timeout = 1000 ms;
+		N_Cr_timeout = 1000 ms;
+		configurable_frames {
+			FRVC5_Rq;
+			FRVC5_Cval;
+		}
+	}
+	P_T_SENSOR {
+		LIN_protocol = "2.1";
+		configured_NAD = 0x20;
+		initial_NAD = 0x20;
+		product_id = 0x010D, 0x0001, 0x00;
+		response_error = RsErr_P_T_SENSOR;
+		P2_min = 50 ms;
+		ST_min = 0 ms;
+		configurable_frames {
+			P_T_SENS_Frm;
+		}
+	}
+}
+
+
+Schedule_tables {
+	Init {
+		MasterReq	delay	10.000 ms;
+		SlaveResp	delay	10.000 ms;
+	}
+	sch_mreq {
+		MasterReq	delay	10.000 ms;
+	}
+	sch_normal_Batt {
+		P_T_SENS_Frm	delay	10.000 ms;
+		CABP_Rq	delay	10.000 ms;
+		CABP_Cval	delay	10.000 ms;
+		EXV_Frm	delay	10.000 ms;
+		HVAC_EXV_Rq_Frm	delay	10.000 ms;
+		ERC_Rq	delay	10.000 ms;
+		DIAG_Stat_ERC_Frm1	delay	10.000 ms;
+		CPH_CAB1_C01	delay	10.000 ms;
+		CPH_CAB1_C02	delay	10.000 ms;
+		CPH_CAB1_Rq	delay	10.000 ms;
+		ERC_Frm1	delay	10.000 ms;
+		FRVC1_Cval	delay	10.000 ms;
+		FRVC1_Rq	delay	10.000 ms;
+		FRVC5_Rq	delay	10.000 ms;
+		FRVC5_Cval	delay	10.000 ms;
+		ERC_Frm2	delay	10.000 ms;
+	}
+	sch_sresp {
+		SlaveResp	delay	10.000 ms;
+	}
+}
+
+
+Signal_encoding_types {
+	c01_ActPosn_Save {
+		logical_value, 0, "POSN_SAVE";
+		logical_value, 1, "POSN_NSAVE";
+	}
+	c01_NACT_ACT {
+		logical_value, 0, "NACT";
+		logical_value, 1, "ACT";
+	}
+	c01_NoErr_Err {
+		logical_value, 0, "NOERR";
+		logical_value, 1, "ERR";
+	}
+	c01_NotActv_Actv {
+		logical_value, 0, "NACT";
+		logical_value, 1, "ACTV";
+	}
+	c02_AKS_Rq {
+		logical_value, 0, "ASC_OFF";
+		logical_value, 1, "ASC_LOW";
+		logical_value, 2, "ASC_HIGH";
+		logical_value, 3, "SNA";
+	}
+	c02_Comp_Rq {
+		logical_value, 0, "COMP_OFF";
+		logical_value, 1, "COMP_ON";
+		logical_value, 2, "NDEF2";
+		logical_value, 3, "SNA";
+	}
+	c02_CptProtn_Stat {
+		logical_value, 0, "NORM";
+		logical_value, 1, "OVERHEATPREV";
+		logical_value, 2, "TPC";
+		logical_value, 3, "PWRDERATE";
+	}
+	c02_Disable_Enable {
+		logical_value, 0, "DSBL";
+		logical_value, 1, "ENBL";
+		logical_value, 2, "RES";
+		logical_value, 3, "SNA";
+	}
+	c02_EXV_InitDir_SNA {
+		logical_value, 0, "NO_SELECT";
+		logical_value, 1, "LOW_ENDSTOP";
+		logical_value, 2, "HIGH_ENDSTOP";
+		logical_value, 3, "SNA";
+	}
+	c02_EXV_InitStat_SNA {
+		logical_value, 0, "NO_INIT";
+		logical_value, 1, "INIT_IN_PROCESS";
+		logical_value, 2, "INIT_READY";
+		logical_value, 3, "SNA";
+	}
+	c02_EXV_Run_Stat {
+		logical_value, 0, "NO_MOVEMENT";
+		logical_value, 1, "ACT_MOVING";
+		logical_value, 2, "NDEF2";
+		logical_value, 3, "SNA";
+	}
+	c02_EXV_Stall_Dtct {
+		logical_value, 0, "NO_STALL_DTCT";
+		logical_value, 1, "STALL_DTCT_ENBL";
+		logical_value, 2, "NDEF2";
+		logical_value, 3, "SNA";
+	}
+	c02_EXV_TempWarn_Stat {
+		logical_value, 0, "OK";
+		logical_value, 1, "WARN";
+		logical_value, 2, "NDEF2";
+		logical_value, 3, "SNA";
+	}
+	c02_EXV_VoltRange {
+		logical_value, 0, "VOLT_RNG_OK";
+		logical_value, 1, "OVERVOLTAGE";
+		logical_value, 2, "UNDERVOLTAGE";
+		logical_value, 3, "SNA";
+	}
+	c02_HVOutOfRngWarn_Stat {
+		logical_value, 0, "NACT";
+		logical_value, 1, "HVUNDR";
+		logical_value, 2, "HVOVR";
+		logical_value, 3, "SNA";
+	}
+	c02_HV_PTC_Reset_Rq {
+		logical_value, 0, "NO_RESET";
+		logical_value, 1, "RESET";
+		logical_value, 2, "NDEF2";
+		logical_value, 3, "SNA";
+	}
+	c02_Inact_Act_Res {
+		logical_value, 0, "INACTIVE";
+		logical_value, 1, "ACTIVE";
+		logical_value, 2, "RES";
+		logical_value, 3, "SNA";
+	}
+	c02_LVOutOfRngWarn_Stat {
+		logical_value, 0, "NACT";
+		logical_value, 1, "LVUNDR";
+		logical_value, 2, "LVOVR";
+		logical_value, 3, "SNA";
+	}
+	c02_Low_High_Ndef_SNA {
+		logical_value, 0, "LOW";
+		logical_value, 1, "HIGH";
+		logical_value, 2, "NDEF";
+		logical_value, 3, "SNA";
+	}
+	c02_MonitActiv {
+		logical_value, 0, "MON_ACTIVE";
+		logical_value, 1, "NO_MON";
+		logical_value, 2, "NDEF";
+		logical_value, 3, "SNA";
+	}
+	c02_NACT_ACT_RES {
+		logical_value, 0, "NACT";
+		logical_value, 1, "ACT";
+		logical_value, 2, "RES";
+		logical_value, 3, "SNA";
+	}
+	c02_Noerror_Error_Ndef {
+		logical_value, 0, "NO_ERROR";
+		logical_value, 1, "ERROR";
+		logical_value, 2, "NDEF";
+		logical_value, 3, "SNA";
+	}
+	c02_Open_Closed_Err_SNA {
+		logical_value, 0, "OPEN";
+		logical_value, 1, "CLOSED";
+		logical_value, 2, "ERR";
+		logical_value, 3, "SNA";
+	}
+	c02_OverHeatWarn_Stat {
+		logical_value, 0, "NACT";
+		logical_value, 1, "OVERHEATRC";
+		logical_value, 2, "OVERHEATCOOL";
+		logical_value, 3, "OVERHEATPCB";
+	}
+	c02_RefRun_Enbl {
+		logical_value, 0, "REFRUN_NALW";
+		logical_value, 1, "REFRUN_ALW";
+		logical_value, 2, "REFRUN_ALW2";
+		logical_value, 3, "SNA";
+	}
+	c02_WakeUp_Stat {
+		logical_value, 0, "NO_WUP";
+		logical_value, 1, "ACTIVE_WUP";
+		logical_value, 2, "NDEF2";
+		logical_value, 3, "SNA";
+	}
+	c02_WakeupStat {
+		logical_value, 0, "NO_WUP";
+		logical_value, 1, "ACTIVE_WUP";
+		logical_value, 2, "NDEF2";
+		logical_value, 3, "SNA";
+	}
+	c03_Comp_Stat {
+		logical_value, 0, "COMP_OFF";
+		logical_value, 1, "COMP_ON";
+		logical_value, 2, "COMP_DEG";
+		logical_value, 3, "COMP_STOPP";
+		logical_value, 4, "COMP_SHUTDOWN";
+		logical_value, 5, "COMP_ASC";
+		logical_value, 6, "COMP_NO_RESET";
+		logical_value, 7, "SNA";
+	}
+	c03_EXV_Init_Sequence {
+		logical_value, 0, "NO_RQ";
+		logical_value, 1, "START_INIT_SQC";
+		logical_value, 2, "WAIT_SQC_FINISH";
+		logical_value, 3, "LAST_SQC_OK";
+		logical_value, 4, "NDEF4";
+		logical_value, 5, "NDEF5";
+		logical_value, 6, "NDEF6";
+		logical_value, 7, "SNA";
+	}
+	c03_EXV_SpdMode {
+		logical_value, 0, "NDEF0";
+		logical_value, 1, "SPD_MD_NORM";
+		logical_value, 2, "SPD_MD_2";
+		logical_value, 3, "SPD_MD_3";
+		logical_value, 4, "SPD_MD_HI";
+		logical_value, 5, "NDEF5";
+		logical_value, 6, "NDEF6";
+		logical_value, 7, "SNA";
+	}
+	c03_EXV_Version {
+		logical_value, 0, "VERSION_A";
+		logical_value, 1, "VERSION_B";
+		logical_value, 2, "VERSION_C";
+		logical_value, 3, "VERSION_D";
+		logical_value, 4, "VERSION_E";
+		logical_value, 5, "VERSION_F";
+		logical_value, 6, "VERSION_G";
+		logical_value, 7, "SNA";
+	}
+	c03_HVAC_EXV_Trq_Md_Rq {
+		logical_value, 0, "NO_TRQ_CTRL";
+		logical_value, 1, "TRQ_20_PRC_LOWER";
+		logical_value, 2, "TRQ_10_PRC_LOWER";
+		logical_value, 3, "TRQ_NORM";
+		logical_value, 4, "TRQ_10_PRC_BOOST";
+		logical_value, 5, "TRQ_20_PRC_BOOST";
+		logical_value, 6, "RES";
+		logical_value, 7, "SNA";
+	}
+	c03_PostRunMode_SNA {
+		logical_value, 0, "NO_POST_RUN";
+		logical_value, 1, "SPEED_1";
+		logical_value, 2, "SPEED_2";
+		logical_value, 3, "SPEED_3";
+		logical_value, 4, "SPEED_4";
+		logical_value, 5, "NDEF1";
+		logical_value, 6, "NDEF2";
+		logical_value, 7, "SNA";
+	}
+	c04_0_to_15_1_SNA_na {
+		physical_value, 0, 15, 1, 0, "NoUnit";
+	}
+	c04_CoolantValve_Move_Stat {
+		logical_value, 0, "IDLE";
+		logical_value, 1, "CW";
+		logical_value, 2, "CCW";
+		logical_value, 3, "REF";
+		logical_value, 14, "ERR";
+		logical_value, 15, "SNA";
+	}
+	c04_Dischrg_Stat {
+		logical_value, 0, "NACT";
+		logical_value, 1, "BUSY";
+		logical_value, 2, "COMPLETE";
+		logical_value, 3, "INCOMPLETE";
+		logical_value, 14, "ERR";
+		logical_value, 15, "SNA";
+	}
+	c04_EXV_Flt_Stat_SNA {
+		logical_value, 0, "NO_FLT";
+		logical_value, 1, "COIL_SHRT";
+		logical_value, 2, "COIL_OPN";
+		logical_value, 3, "OVR_TMP_SHUTDWN";
+		logical_value, 4, "BLOCK";
+		logical_value, 5, "STAT_INDET";
+		logical_value, 15, "SNA";
+	}
+	c04_PreHeat_Stat {
+		logical_value, 0, "OFF";
+		logical_value, 1, "TEMPLOCK";
+		logical_value, 2, "OVERHEATLOCK";
+		logical_value, 3, "PERMLOCK";
+		logical_value, 4, "OPER";
+		logical_value, 5, "PRODMD";
+		logical_value, 6, "POSTPRODMD";
+		logical_value, 7, "ACTDISCHRG";
+		logical_value, 14, "ERR";
+		logical_value, 15, "SNA";
+	}
+	c04_TJA_Posn {
+		logical_value, 0, "OPEN";
+		logical_value, 1, "STEP_1";
+		logical_value, 2, "STEP_2";
+		logical_value, 3, "STEP_3";
+		logical_value, 4, "STEP_4";
+		logical_value, 5, "STEP_5";
+		logical_value, 6, "STEP_6";
+		logical_value, 7, "STEP_7";
+		logical_value, 8, "STEP_8";
+		logical_value, 9, "CLOSE";
+		logical_value, 10, "RES1";
+		logical_value, 11, "RES2";
+		logical_value, 12, "RES3";
+		logical_value, 13, "RES4";
+		logical_value, 14, "ERR";
+		logical_value, 15, "SNA";
+	}
+	c04_noErr_OpnErr_ClsErr {
+		logical_value, 0, "NOERR";
+		logical_value, 1, "OPNERR";
+		logical_value, 2, "CLSERR";
+		logical_value, 3, "NOMOVE";
+		logical_value, 4, "RES";
+		logical_value, 5, "RES2";
+		logical_value, 6, "RES3";
+		logical_value, 7, "RES4";
+		logical_value, 8, "RES5";
+		logical_value, 9, "RES6";
+		logical_value, 10, "RES7";
+		logical_value, 11, "RES8";
+		logical_value, 12, "RES9";
+		logical_value, 13, "RES10";
+		logical_value, 14, "ERR";
+		logical_value, 15, "SNA";
+	}
+	c06_0_to_63_1_SNA_na {
+		physical_value, 0, 63, 1, 0, "NoUnit";
+	}
+	c07_A_0_126_1 {
+		physical_value, 0, 126, 1, 0, "A_PC";
+		logical_value, 127, "SNA";
+	}
+	c08_A_0_50k8_0k2_SNA {
+		physical_value, 0, 254, 0.2, 0, "A_PC";
+		logical_value, 255, "SNA";
+	}
+	c08_A_0_to_62d5_0d25 {
+		physical_value, 0, 250, 0.25, 0, "A";
+		logical_value, 254, "ERR";
+		logical_value, 255, "SNA";
+	}
+	c08_HV_PTC_HV_DC_curr {
+		physical_value, 0, 254, 0.25, 0, "A";
+		logical_value, 255, "SNA";
+	}
+	c08_V_0_1016_4 {
+		physical_value, 0, 254, 4, 0, "V";
+		logical_value, 255, "SNA";
+	}
+	c08_V_0_25k4_0k1_cv {
+		physical_value, 0, 254, 0.1, 0, "V";
+		logical_value, 255, "SNA";
+	}
+	c08_degC_m50_204_1 {
+		physical_value, 0, 254, 1, -50, "°C_PC";
+		logical_value, 255, "SNA";
+	}
+	c08_degCels_m50_to_204_1_SNA_na {
+		physical_value, 0, 254, 1, -50, "°C";
+		logical_value, 255, "SNA";
+	}
+	c08_degCelsius_m50_to_170_1 {
+		physical_value, 0, 220, 1, -50, "°C";
+		logical_value, 254, "ERR";
+		logical_value, 255, "SNA";
+	}
+	c08_kW_0_to_20d32_0d08 {
+		physical_value, 0, 254, 0.08, 0, "kW";
+		logical_value, 255, "SNA";
+	}
+	c08_perc_0_101k6_0k4_SNA {
+		physical_value, 0, 254, 0.4, 0, "%_PC";
+		logical_value, 255, "SNA";
+	}
+	c08_percent_0_to_100_0k5_ERR {
+		physical_value, 0, 200, 0.5, 0, "%";
+		logical_value, 254, "ERR";
+		logical_value, 255, "SNA";
+	}
+	c10_0_1022 {
+		physical_value, 0, 1022, 1, 0, "NoUnit";
+		logical_value, 1023, "SNA";
+	}
+	c12_bar_0_36k0184_0k0088 {
+		physical_value, 0, 4093, 0.0088, 0, "bar";
+		logical_value, 4094, "RES";
+		logical_value, 4095, "SNA";
+	}
+	c12_degC_m40_150_0k1 {
+		physical_value, 0, 1900, 0.1, -40, "°C";
+		logical_value, 4095, "SNA";
+	}
+	c16_Steps_0_to_65533_1 {
+		physical_value, 0, 65533, 1, 0, "Steps";
+		logical_value, 65534, "ERR";
+		logical_value, 65535, "SNA";
+	}
+	c16_V_0_to_3212k75_0k05 {
+		physical_value, 0, 64255, 0.05, 0, "V";
+		logical_value, 65535, "SNA";
+	}
+}
+
+
+Signal_representation {
+	c01_ActPosn_Save : ActPosnSave_Rq_TIO_FRVC1, ActPosnSave_Rq_TIO_FRVC5;
+	c01_NACT_ACT : AllPosnAdj_Stat_FRVC1, AllPosnAdj_Stat_FRVC5, EltlErr_Stat_FRVC1, EltlErr_Stat_FRVC5, GrpErr_Stat_FRVC1, GrpErr_Stat_FRVC5, MechBreakErr_Stat_FRVC1, MechBreakErr_Stat_FRVC5, OverTempErr_Stat_FRVC1, OverTempErr_Stat_FRVC5, OverTempWarn_Stat_FRVC1, OverTempWarn_Stat_FRVC5, OverVoltErr_Stat_FRVC1, OverVoltErr_Stat_FRVC5, PosSnaErr_Stat_FRVC1, PosSnaErr_Stat_FRVC5, RefRunErr_Stat_FRVC1, RefRunErr_Stat_FRVC5, RefRun_Stat_FRVC1, RefRun_Stat_FRVC5, UndrVoltErr_Stat_FRVC1, UndrVoltErr_Stat_FRVC5, UnexpBlkErr_Stat_FRVC1, UnexpBlkErr_Stat_FRVC5;
+	c01_NoErr_Err : RsErr_Cval_CABP, RsErr_Stat_CPH_CAB1;
+	c01_NotActv_Actv : Dischrg_Rq_TIO_CPH_CAB1, HtEnbl_Rq_TIO_CPH_CAB1;
+	c02_AKS_Rq : ASC_TIO_ERC;
+	c02_Comp_Rq : CmprOn_Rq_TIO_ERC;
+	c02_CptProtn_Stat : CptProtn_Stat_CPH_CAB1;
+	c02_Disable_Enable : HVAC_EXV_Move_Enbl;
+	c02_EXV_InitDir_SNA : HVAC_EXV_Init_Dir;
+	c02_EXV_InitStat_SNA : EXV_curInit_Stat;
+	c02_EXV_Run_Stat : EXV_Run_Stat;
+	c02_EXV_Stall_Dtct : EXV_Stall_Dtct_Stat, HVAC_EXV_Stall_Dtct_Enbl;
+	c02_EXV_TempWarn_Stat : EXV_OverTemp_Warn;
+	c02_EXV_VoltRange : EXV_Volt_Stat;
+	c02_HVOutOfRngWarn_Stat : HVOutOfRngWarn_Stat_CPH_CAB1;
+	c02_HV_PTC_Reset_Rq : Rst_Rq_TIO_ERC;
+	c02_Inact_Act_Res : SemiConductSwRq_TIO_CPH_CAB1, SemiConductSwRq_TIO_ERC;
+	c02_LVOutOfRngWarn_Stat : LVOutOfRngWarn_Stat_CPH_CAB1;
+	c02_Low_High_Ndef_SNA : PWM_Stat_CABP;
+	c02_MonitActiv : Mon_Stat_CABP;
+	c02_NACT_ACT_RES : DCDCCnvrFai_Stat_CPH_CAB1, HiCurrFai_Stat_CPH_CAB1, HotSptFai_Stat_CPH_CAB1, IGBTDrvFai_Stat_CPH_CAB1, IntFai_Stat_CPH_CAB1, TempSensFai_Stat_CPH_CAB1;
+	c02_Noerror_Error_Ndef : BlockFlt_Stat_CABP, DryRun_Flt_Stat_CABP, ElctrcFlt_Stat_CABP, OverCurrFlt_Stat_CABP, OverTempFlt_Stat_CABP, SpVoltFlt_Stat_CABP;
+	c02_Open_Closed_Err_SNA : SemiConductSw_Stat_CPH_CAB1, SemiConductSw_Stat_ERC;
+	c02_OverHeatWarn_Stat : OverHeatWarn_Stat_CPH_CAB1;
+	c02_RefRun_Enbl : RefRunEnbl_Rq_TIO_FRVC1, RefRunEnbl_Rq_TIO_FRVC5;
+	c02_WakeUp_Stat : WakeupStat_EXV, Wakeup_Stat_ERC;
+	c02_WakeupStat : WakeUp_Stat_FRVC1, WakeUp_Stat_FRVC5, Wakeup_Stat_CABP;
+	c03_Comp_Stat : CmprOprtnV2_Stat_ERC;
+	c03_EXV_Init_Sequence : HVAC_EXV_Init_Rq;
+	c03_EXV_SpdMode : EXV_SpdMd, HVAC_EXV_SpdMd_Rq;
+	c03_EXV_Version : EXV_Version;
+	c03_HVAC_EXV_Trq_Md_Rq : HVAC_EXV_Trq_Md_Rq;
+	c03_PostRunMode_SNA : PostRunMode_CABP;
+	c04_0_to_15_1_SNA_na : DIAG_Stat_Aliv_St_Cnt_ERC;
+	c04_CoolantValve_Move_Stat : Move_Stat_FRVC1, Move_Stat_FRVC5;
+	c04_Dischrg_Stat : Dischrg_Stat_CPH_CAB1;
+	c04_EXV_Flt_Stat_SNA : EXV_Fault_Stat;
+	c04_PreHeat_Stat : CoolntPreHt_Stat_CPH_CAB1;
+	c04_TJA_Posn : StepPosn_Stat_FRVC1, StepPosn_Stat_FRVC5;
+	c04_noErr_OpnErr_ClsErr : Err_Stat_FRVC1, Err_Stat_FRVC5;
+	c06_0_to_63_1_SNA_na : DIAG_Stat_Data1_ERC, DIAG_Stat_Data2_ERC, DIAG_Stat_Data3_ERC, DIAG_Stat_Data4_ERC, DIAG_Stat_Data5_ERC, DIAG_Stat_Data6_ERC, DIAG_Stat_Data7_ERC, DIAG_Stat_Data8_ERC, DIAG_Stat_Idx_Actl_ERC, DIAG_Stat_Num_Max_ERC;
+	c07_A_0_126_1 : HV_PhaseCurr_Cval_ERC;
+	c08_A_0_50k8_0k2_SNA : ActlCurr_Cval_CABP;
+	c08_A_0_to_62d5_0d25 : HVCurr_Cval_CPH_CAB1;
+	c08_HV_PTC_HV_DC_curr : HV_DCCurr_Cval_ERC;
+	c08_V_0_1016_4 : HV_Volt_Cval_ERC;
+	c08_V_0_25k4_0k1_cv : LoVolt_Cval_CABP;
+	c08_degC_m50_204_1 : InvTemp_Cval_ERC;
+	c08_degCels_m50_to_204_1_SNA_na : ElctrcTemp_Cval_CABP;
+	c08_degCelsius_m50_to_170_1 : CoolntInTemp_Cval_CPH_CAB1, CoolntOutTemp_Cval_CPH_CAB1, CoolntTemp_Rq_TIO_CPH_CAB1;
+	c08_kW_0_to_20d32_0d08 : PowerCons_Cval_ERC;
+	c08_perc_0_101k6_0k4_SNA : PerctSpd_Cval_CABP, TrgtPerctSpd_Cval_CABP, TrgtPerctSpd_Rq_CABP;
+	c08_percent_0_to_100_0k5_ERR : CmprSpdTrgtV2_Rq_TIO_ERC, CmprSpdV2_Cval_ERC, Perct_Cval_CPH_CAB1, Perct_Rq_TIO_CPH_CAB1;
+	c10_0_1022 : EXV_Pos, HVAC_EXV_Set_Rq;
+	c12_bar_0_36k0184_0k0088 : P_T_Sens_CoolPress;
+	c12_degC_m40_150_0k1 : P_T_Sens_CoolTemp, P_T_Sens_IntTemp;
+	c16_Steps_0_to_65533_1 : InfVarPosn_Cval_FRVC1, InfVarPosn_Cval_FRVC5, InfVarPosn_Rq_TIO_FRVC1, InfVarPosn_Rq_TIO_FRVC5;
+	c16_V_0_to_3212k75_0k05 : HVVolt_Cval_CPH_CAB1;
+}
+
+

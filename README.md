@@ -43,3 +43,10 @@ Monitors the online status of boxes via MQTT (`<topic>/<box>/Status/Connection`)
 full-screen, htop-like terminal view.
 
 [... read more ...](docs/box_status.md)
+
+
+### `lin_send_ldf`
+
+Send LIN frames from an LDF file over a PLin-compatible interface.
+
+[... read more ...](docs/lin_send_ldf.md)

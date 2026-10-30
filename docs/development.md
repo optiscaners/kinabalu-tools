@@ -21,8 +21,12 @@ k6u/
   can/
     can_send_trc.py         # can_send_trc command
     voice_to_can.py         # voice_to_can command
+  lin/
+    lin_send_ldf.py         # lin_send_ldf command
+    PlinApi/                # PEAK PLIN API wrapper (PLinApi.py) and DLL
   tools/
     firmware_duplicates.py  # firmware_duplicates command
+    box_status.py           # box_status command
   data/                     # files shipped with the package (test wave file)
 examples/                   # example configuration files
 docs/                       # this documentation

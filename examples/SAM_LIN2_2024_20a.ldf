@@ -1,0 +1,1942 @@
+/* CHECKSUM={C53330F7CFC943F8C0A63BC9B61D56A9D9870AC5} */ 
+/* ************************************************************************** */
+/*                                                                            */
+/*                              Daimler Truck AG                              */
+/*                            All rights reserved                             */
+/*                                                                            */
+/* ************************************************************************** */
+/*                                                                            */
+/*  Description:   LIN Description file                                       */
+/*  Network:       SAM LIN2                                                   */
+/*  Release:       2024-20a                                                   */
+/*                                                                            */
+/*  Engineer:      J. Hofmann, TP/EMS                                         */
+/*  Creation Date: 2024-05-21                                                 */
+/*  Status:        RELEASED                                                   */
+/*  XDIS-Database: CVD-Database                                               */
+/*                                                                            */
+/* ************************************************************************** */
+
+
+LIN_description_file;
+LIN_protocol_version = "2.1";
+LIN_language_version = "2.1";
+LIN_speed = 19.200 kbps;
+
+Channel_name = "SAM_LIN2";
+
+Nodes {
+	Master : SAM_LIN2_Master, 2.000 ms, 0.200 ms;
+	Slaves : IBS, LGEN0, LGEN1, LGEN2, LGEN3, RLCM;
+}
+
+
+Signals {
+	AhChrgCycle_Cval_IBS : 8, 255, IBS, SAM_LIN2_Master;
+	AhDischrgCycle_Cval_IBS : 8, 255, IBS, SAM_LIN2_Master;
+	AirTempOutsd_Cval_SCA : 16, 65535, SAM_LIN2_Master, RLCM;
+	AvgQscntCurrRestPhase_Cval_IBS : 7, 127, IBS, SAM_LIN2_Master;
+	BatConfidenceIndex_Stat : 3, 7, IBS, SAM_LIN2_Master;
+	BatCpctyFull_Cval : 8, 255, IBS, SAM_LIN2_Master;
+	BatCpctyRest_Cval : 8, 255, IBS, SAM_LIN2_Master;
+	BatCurr_Cval : 24, {0xff, 0xff, 0xff}, IBS, SAM_LIN2_Master;
+	BatCurr_Stat_IBS : 2, 3, IBS, SAM_LIN2_Master;
+	BatDpDischrgRestPhase_Stat_IBS : 1, 0, IBS, SAM_LIN2_Master;
+	BatMaxU0_Cval : 10, 1023, SAM_LIN2_Master, IBS;
+	BatMaxU0_Cval_IBS3 : 10, 1023, SAM_LIN2_Master, IBS;
+	BatMinU0_Cval : 10, 1023, SAM_LIN2_Master, IBS;
+	BatMinU0_Cval_IBS3 : 10, 1023, SAM_LIN2_Master, IBS;
+	BatPlDscnFl_Stat_E2E : 2, 3, IBS, SAM_LIN2_Master;
+	BatRplcmntCntr_Cval_IBS : 5, 0, IBS, SAM_LIN2_Master;
+	BatRstCntr_Cval_IBS : 5, 0, IBS, SAM_LIN2_Master;
+	BatSOFHVReq_Cval : 8, 255, IBS, SAM_LIN2_Master;
+	BatSOFeStrExtLig_Cval_E2E : 10, 1023, IBS, SAM_LIN2_Master;
+	BatSOH_Cval : 8, 255, IBS, SAM_LIN2_Master;
+	BatTemp_Cval : 8, 255, IBS, SAM_LIN2_Master;
+	BatTemp_Stat_IBS : 2, 3, IBS, SAM_LIN2_Master;
+	BatType_Stat : 4, 15, SAM_LIN2_Master, IBS;
+	BatType_Stat_IBS3 : 4, 15, SAM_LIN2_Master, IBS;
+	BatVolt12_Cval_E2E : 8, 255, IBS, SAM_LIN2_Master;
+	BatVolt12_Cval_IBS : 8, 255, IBS, SAM_LIN2_Master;
+	BatVolt12_Stat_IBS : 2, 3, IBS, SAM_LIN2_Master;
+	BatVolt24_Cval_E2E : 10, 1023, IBS, SAM_LIN2_Master;
+	BatVolt24_Cval_IBS : 10, 1023, IBS, SAM_LIN2_Master;
+	BatVolt24_Stat_IBS : 2, 3, IBS, SAM_LIN2_Master;
+	CRC_SG_IBS_Frm5_AR2 : 8, 154, IBS, SAM_LIN2_Master;
+	CRC_SG_RLCM_E2E_Frm1 : 8, 0, RLCM, SAM_LIN2_Master;
+	CapLossTop_Cval_IBS : 8, 255, IBS, SAM_LIN2_Master;
+	CcksmIBSSfPrm_Cval_E2E : 8, 255, IBS, SAM_LIN2_Master;
+	DIAG_TX_REQUEST_IBS : 1, 0, IBS, SAM_LIN2_Master;
+	EQWrk_Stat : 2, 3, SAM_LIN2_Master, IBS;
+	EepErr_Stat_IBS : 2, 3, IBS, SAM_LIN2_Master;
+	EepErr_Stat_IBS3 : 2, 3, IBS, SAM_LIN2_Master;
+	EqulbrErr_Stat : 2, 3, IBS, SAM_LIN2_Master;
+	EqulbrErr_Stat_E2E : 2, 3, IBS, SAM_LIN2_Master;
+	EqulbrErr_Stat_IBS : 2, 3, IBS, SAM_LIN2_Master;
+	ExtBatChrgDtct_Stat_IBS : 1, 0, IBS, SAM_LIN2_Master;
+	FullChrgDet_Cval_IBS : 1, 0, IBS, SAM_LIN2_Master;
+	HW_Err_Stat_IBS : 2, 3, IBS, SAM_LIN2_Master;
+	HW_Err_Stat_IBS3 : 2, 3, IBS, SAM_LIN2_Master;
+	I0_Cval_PNM : 6, 63, SAM_LIN2_Master, IBS;
+	I1_Cval_PNM : 8, 255, SAM_LIN2_Master, IBS;
+	I2_Cval_PNM : 7, 127, SAM_LIN2_Master, IBS;
+	I3_Cval_PNM : 7, 127, SAM_LIN2_Master, IBS;
+	IBSErr_Stat : 2, 3, IBS, SAM_LIN2_Master;
+	IBattMinLastCrank_Cval : 16, 65535, IBS, SAM_LIN2_Master;
+	IBattMinLastCrank_Cval_IBS3 : 16, 65535, IBS, SAM_LIN2_Master;
+	Ign_Stat : 2, 3, SAM_LIN2_Master, IBS, RLCM;
+	IncIntResOrVoltDrop_Stat_IBS : 1, 0, IBS, SAM_LIN2_Master;
+	LGEN0_DeExcitation_Stat : 1, 1, LGEN0, SAM_LIN2_Master;
+	LGEN0_ElectricalFault_Stat : 1, 0, LGEN0, SAM_LIN2_Master;
+	LGEN0_HTCutoff_Stat : 1, 0, LGEN0, SAM_LIN2_Master;
+	LGEN0_IndCurr_Cval : 8, 15, LGEN0;
+	LGEN0_Mech_Stat : 1, 0, LGEN0, SAM_LIN2_Master;
+	LGEN0_ParallelMode_Stat : 1, 0, LGEN0;
+	LGEN0_PinS1Conn_Stat : 1, 1, LGEN0;
+	LGEN0_PinSConn_Stat : 1, 1, LGEN0;
+	LGEN0_SenseDiff_Stat : 1, 1, LGEN0;
+	LGEN0_TimeOutErr_Stat : 1, 0, LGEN0, SAM_LIN2_Master;
+	LGEN0_TxData_IC_Temp_Cval : 8, 255, LGEN0;
+	LGEN0_TxData_NULL : 8, 40, LGEN0;
+	LGEN0_TxData_ShaftSpd_Cval : 8, 255, LGEN0, SAM_LIN2_Master;
+	LGEN0_TxData_Stat : 3, 0, LGEN0, SAM_LIN2_Master;
+	LGEN0_TxData_Umeas_Cval : 8, 255, LGEN0;
+	LGEN0_TxData_Uset_Cval : 8, 255, LGEN0;
+	LGEN0_Workload_Cval : 5, 0, LGEN0, SAM_LIN2_Master;
+	LGEN1_ActualVal_InductionCurrent : 8, 15, LGEN1, SAM_LIN2_Master;
+	LGEN1_ERR_ElectricalFault : 1, 0, LGEN1, SAM_LIN2_Master;
+	LGEN1_ERR_Timeout : 1, 0, LGEN1, SAM_LIN2_Master;
+	LGEN1_Flag_DeExcitation : 1, 1, LGEN1, SAM_LIN2_Master;
+	LGEN1_Flag_HT : 1, 0, LGEN1, SAM_LIN2_Master;
+	LGEN1_Flag_ParallelMode : 1, 0, LGEN1, SAM_LIN2_Master;
+	LGEN1_Flag_PinS1_Conn : 1, 1, LGEN1, SAM_LIN2_Master;
+	LGEN1_Flag_PinS_Conn : 1, 1, LGEN1, SAM_LIN2_Master;
+	LGEN1_Flag_ROT : 1, 0, LGEN1, SAM_LIN2_Master;
+	LGEN1_Flag_SenseDiff : 1, 1, LGEN1, SAM_LIN2_Master;
+	LGEN1_Selected_Data_CVal : 8, 40, LGEN1, SAM_LIN2_Master;
+	LGEN1_TxData_Selected : 3, 0, LGEN1, SAM_LIN2_Master;
+	LGEN1_Workload : 5, 0, LGEN1, SAM_LIN2_Master;
+	LGEN2_ActualVal_InductionCurrent : 8, 15, LGEN2, SAM_LIN2_Master;
+	LGEN2_ERR_ElectricalFault : 1, 0, LGEN2, SAM_LIN2_Master;
+	LGEN2_ERR_Timeout : 1, 0, LGEN2, SAM_LIN2_Master;
+	LGEN2_Flag_DeExcitation : 1, 1, LGEN2, SAM_LIN2_Master;
+	LGEN2_Flag_HT : 1, 0, LGEN2, SAM_LIN2_Master;
+	LGEN2_Flag_ParallelMode : 1, 0, LGEN2, SAM_LIN2_Master;
+	LGEN2_Flag_PinS1_Conn : 1, 1, LGEN2, SAM_LIN2_Master;
+	LGEN2_Flag_PinS_Conn : 1, 1, LGEN2, SAM_LIN2_Master;
+	LGEN2_Flag_ROT : 1, 0, LGEN2, SAM_LIN2_Master;
+	LGEN2_Flag_SenseDiff : 1, 1, LGEN2, SAM_LIN2_Master;
+	LGEN2_Selected_Data_CVal : 8, 40, LGEN2, SAM_LIN2_Master;
+	LGEN2_TxData_Selected : 3, 0, LGEN2, SAM_LIN2_Master;
+	LGEN2_Workload : 5, 0, LGEN2, SAM_LIN2_Master;
+	LGEN3_ActualVal_InductionCurrent : 8, 15, LGEN3, SAM_LIN2_Master;
+	LGEN3_ERR_ElectricalFault : 1, 0, LGEN3, SAM_LIN2_Master;
+	LGEN3_ERR_Timeout : 1, 0, LGEN3, SAM_LIN2_Master;
+	LGEN3_Flag_DeExcitation : 1, 1, LGEN3, SAM_LIN2_Master;
+	LGEN3_Flag_HT : 1, 0, LGEN3, SAM_LIN2_Master;
+	LGEN3_Flag_ParallelMode : 1, 0, LGEN3, SAM_LIN2_Master;
+	LGEN3_Flag_PinS1_Conn : 1, 1, LGEN3, SAM_LIN2_Master;
+	LGEN3_Flag_PinS_Conn : 1, 1, LGEN3, SAM_LIN2_Master;
+	LGEN3_Flag_ROT : 1, 0, LGEN3, SAM_LIN2_Master;
+	LGEN3_Flag_SenseDiff : 1, 1, LGEN3, SAM_LIN2_Master;
+	LGEN3_Selected_Data_CVal : 8, 40, LGEN3, SAM_LIN2_Master;
+	LGEN3_TxData_Selected : 3, 0, LGEN3, SAM_LIN2_Master;
+	LGEN3_Workload : 5, 0, LGEN3, SAM_LIN2_Master;
+	LGEN_CutOffSpeed_LRMode : 4, 0, SAM_LIN2_Master, LGEN0, LGEN1, LGEN2, LGEN3;
+	LGEN_MaxInductionCurrent : 7, 127, SAM_LIN2_Master, LGEN0, LGEN1, LGEN2, LGEN3;
+	LGEN_NominalVoltage : 7, 127, SAM_LIN2_Master, LGEN0, LGEN1, LGEN2, LGEN3;
+	LGEN_OperateInParallelmode : 1, 0, SAM_LIN2_Master, LGEN0, LGEN1, LGEN2, LGEN3;
+	LGEN_RampTime_LRMode : 4, 0, SAM_LIN2_Master, LGEN0, LGEN1, LGEN2, LGEN3;
+	LGEN_TxData_Selection : 3, 0, SAM_LIN2_Master, LGEN0, LGEN1, LGEN2, LGEN3;
+	LgtSensNightMd_Stat : 2, 0, RLCM, SAM_LIN2_Master;
+	LgtSensNightMd_Stat_E2E : 2, 0, RLCM, SAM_LIN2_Master;
+	LgtSens_Stat : 2, 0, RLCM, SAM_LIN2_Master;
+	LgtSens_Stat_E2E : 2, 0, RLCM, SAM_LIN2_Master;
+	LoBm_Rq : 2, 0, RLCM, SAM_LIN2_Master;
+	LoBm_Rq_E2E : 2, 0, RLCM, SAM_LIN2_Master;
+	MeasSig2_Stat_IBS : 1, 0, IBS, SAM_LIN2_Master;
+	MeasSig3_Stat_IBS : 1, 0, IBS, SAM_LIN2_Master;
+	MinBatCpctyCRANK_Cval_IBS : 8, 255, IBS, SAM_LIN2_Master;
+	MinBatCpctyCRANK_Cval_IBS3 : 8, 255, IBS, SAM_LIN2_Master;
+	NTC_BatTermTemp_Cval : 8, 255, IBS, SAM_LIN2_Master;
+	NmbrOfCycls_Cval : 12, 4095, IBS, SAM_LIN2_Master;
+	NomCapDetBat_Cval : 8, 255, SAM_LIN2_Master, IBS;
+	NomCapDetBat_Cval_IBS3 : 8, 255, SAM_LIN2_Master, IBS;
+	NomIntResistDetBat_Cval : 10, 1023, SAM_LIN2_Master, IBS;
+	NomIntResistDetBat_Cval_IBS3 : 10, 1023, SAM_LIN2_Master, IBS;
+	RainSensLowVolt_Stat : 2, 0, RLCM, SAM_LIN2_Master;
+	RainSensLowVolt_Stat_E2E : 2, 0, RLCM, SAM_LIN2_Master;
+	RainSensSenstvty_Stat : 4, 15, SAM_LIN2_Master, RLCM;
+	RainSens_Stat : 2, 0, RLCM, SAM_LIN2_Master;
+	RainSens_Stat_E2E : 2, 0, RLCM, SAM_LIN2_Master;
+	RedcMinBatSftyOffset_Stat : 2, 3, SAM_LIN2_Master, IBS;
+	RedcMinBatSftyOffst_Stat_IBS3 : 2, 3, SAM_LIN2_Master, IBS;
+	Resrv1_SCA_LIN2_Frm5 : 1, 0, SAM_LIN2_Master, LGEN0, LGEN1, LGEN2, LGEN3;
+	Resrv2_SCA_LIN2_Frm5 : 1, 0, SAM_LIN2_Master, LGEN0, LGEN1, LGEN2, LGEN3;
+	Ri_Crank_Cval : 8, 255, IBS, SAM_LIN2_Master;
+	Ri_Crank_Cval_IBS3 : 8, 255, IBS, SAM_LIN2_Master;
+	Ri_Impdnc_Cval : 8, 255, IBS, SAM_LIN2_Master;
+	RsErr_Stat_IBS : 1, 0, IBS, SAM_LIN2_Master;
+	RsErr_Stat_LGEN0 : 1, 0, LGEN0, SAM_LIN2_Master;
+	RsErr_Stat_LGEN1 : 1, 0, LGEN1, SAM_LIN2_Master;
+	RsErr_Stat_LGEN2 : 1, 0, LGEN2, SAM_LIN2_Master;
+	RsErr_Stat_LGEN3 : 1, 0, LGEN3, SAM_LIN2_Master;
+	RsErr_Stat_RLCM : 1, 0, RLCM, SAM_LIN2_Master;
+	RsErr_Stat_RLCM_E2E : 1, 0, RLCM, SAM_LIN2_Master;
+	SOC_LoTlrnc_Cval_IBS : 8, 255, IBS, SAM_LIN2_Master;
+	SOC_UpTlrnc_Cval_IBS : 8, 255, IBS, SAM_LIN2_Master;
+	SOH_CnfdncIndex_Stat_IBS : 3, 7, IBS, SAM_LIN2_Master;
+	SQC_SG_IBS_Frm5_AR2 : 4, 0, IBS, SAM_LIN2_Master;
+	SQC_SG_RLCM_E2E_Frm1 : 4, 0, RLCM, SAM_LIN2_Master;
+	ShntDiscntErr_Stat : 2, 3, IBS, SAM_LIN2_Master;
+	Splash_Rq : 2, 0, RLCM, SAM_LIN2_Master;
+	Splash_Rq_E2E : 2, 0, RLCM, SAM_LIN2_Master;
+	T_Cval_PNM : 7, 127, SAM_LIN2_Master, IBS;
+	TmInSrv_Cval : 9, 511, IBS, SAM_LIN2_Master;
+	TwlgtLvl_Stat : 4, 15, RLCM, SAM_LIN2_Master;
+	TwlgtLvl_Stat_E2E : 4, 15, RLCM, SAM_LIN2_Master;
+	UBatt24HighRes_Cval : 16, 65535, IBS, SAM_LIN2_Master;
+	UBattMinLastCrank_Cval : 16, 65535, IBS, SAM_LIN2_Master;
+	UBattMinLastCrank_Cval_IBS3 : 16, 65535, IBS, SAM_LIN2_Master;
+	VehModle_Stat : 4, 15, SAM_LIN2_Master, RLCM;
+	VehSpd_Cval_CPC : 16, 65535, SAM_LIN2_Master, RLCM;
+	VltRppl_Rq_IBS : 2, 0, IBS, SAM_LIN2_Master;
+	WireInvErr_Stat : 2, 3, IBS, SAM_LIN2_Master;
+	WndShldType_Stat : 4, 15, SAM_LIN2_Master, RLCM;
+	WndShldWash_Stat : 2, 3, SAM_LIN2_Master, RLCM;
+	WprAuto_Rq : 2, 3, SAM_LIN2_Master, RLCM;
+	WprPkSw_Stat : 2, 3, SAM_LIN2_Master, RLCM;
+	WprSpd_Rq : 2, 0, RLCM, SAM_LIN2_Master;
+	WprSpd_Rq_E2E : 2, 0, RLCM, SAM_LIN2_Master;
+	Wrn24V_UnFlw_Cval_PNM : 4, 15, SAM_LIN2_Master, IBS;
+	Wrn24V_UnFlw_Cval_PNM_IBS3 : 4, 15, SAM_LIN2_Master, IBS;
+	WrnI_OvFlw_Cval_PNM : 4, 15, SAM_LIN2_Master, IBS;
+	WrnI_OvFlw_Cval_PNM_IBS3 : 4, 15, SAM_LIN2_Master, IBS;
+	WrnQ_OvFlw_Cval_PNM : 4, 15, SAM_LIN2_Master, IBS;
+	WrnQ_OvFlw_Cval_PNM_IBS3 : 4, 15, SAM_LIN2_Master, IBS;
+	Wupd_Stat_IBS : 2, 0, IBS, SAM_LIN2_Master;
+	Wupd_Stat_RLCM : 2, 0, RLCM, SAM_LIN2_Master;
+	Wupd_Stat_RLCM_E2E : 2, 0, RLCM, SAM_LIN2_Master;
+	t1_Cval_PNM : 5, 1, SAM_LIN2_Master, IBS;
+	t2_Cval_PNM : 4, 15, SAM_LIN2_Master, IBS;
+	t3_Cval_PNM : 8, 255, SAM_LIN2_Master, IBS;
+}
+
+
+Diagnostic_signals {
+	MasterReqB0:8,0;
+	MasterReqB1:8,0;
+	MasterReqB2:8,0;
+	MasterReqB3:8,0;
+	MasterReqB4:8,0;
+	MasterReqB5:8,0;
+	MasterReqB6:8,0;
+	MasterReqB7:8,0;
+	SlaveRespB0:8,0;
+	SlaveRespB1:8,0;
+	SlaveRespB2:8,0;
+	SlaveRespB3:8,0;
+	SlaveRespB4:8,0;
+	SlaveRespB5:8,0;
+	SlaveRespB6:8,0;
+	SlaveRespB7:8,0;
+}
+
+Frames {
+	SCA_Frm1 : 16, SAM_LIN2_Master, 8 {
+		Ign_Stat, 0;
+		WprAuto_Rq, 2;
+		WndShldWash_Stat, 4;
+		WprPkSw_Stat, 6;
+		VehModle_Stat, 8;
+		WndShldType_Stat, 12;
+		VehSpd_Cval_CPC, 16;
+		AirTempOutsd_Cval_SCA, 32;
+		RainSensSenstvty_Stat, 48;
+	}
+	SCA_Frm2_MBT : 17, SAM_LIN2_Master, 8 {
+		I0_Cval_PNM, 0;
+		I1_Cval_PNM, 6;
+		I2_Cval_PNM, 14;
+		I3_Cval_PNM, 21;
+		t1_Cval_PNM, 28;
+		t2_Cval_PNM, 33;
+		t3_Cval_PNM, 37;
+		T_Cval_PNM, 45;
+		WrnI_OvFlw_Cval_PNM, 52;
+		Wrn24V_UnFlw_Cval_PNM, 56;
+		WrnQ_OvFlw_Cval_PNM, 60;
+	}
+	SCA_Frm3 : 18, SAM_LIN2_Master, 8 {
+		NomCapDetBat_Cval, 0;
+		BatType_Stat, 8;
+		NomIntResistDetBat_Cval, 12;
+		BatMinU0_Cval, 22;
+		BatMaxU0_Cval, 32;
+		RedcMinBatSftyOffset_Stat, 42;
+	}
+	LGEN0_Frm3 : 20, LGEN0, 5 {
+		LGEN0_HTCutoff_Stat, 0;
+		LGEN0_Mech_Stat, 1;
+		LGEN0_ElectricalFault_Stat, 2;
+		LGEN0_Workload_Cval, 3;
+		LGEN0_IndCurr_Cval, 8;
+		LGEN0_TxData_Stat, 16;
+		RsErr_Stat_LGEN0, 22;
+		LGEN0_TimeOutErr_Stat, 23;
+		LGEN0_TxData_IC_Temp_Cval, 24;
+		LGEN0_TxData_NULL, 24;
+		LGEN0_TxData_ShaftSpd_Cval, 24;
+		LGEN0_TxData_Umeas_Cval, 24;
+		LGEN0_TxData_Uset_Cval, 24;
+		LGEN0_PinSConn_Stat, 32;
+		LGEN0_PinS1Conn_Stat, 33;
+		LGEN0_SenseDiff_Stat, 34;
+		LGEN0_DeExcitation_Stat, 35;
+		LGEN0_ParallelMode_Stat, 36;
+	}
+	LGEN1_Frm2 : 21, LGEN1, 5 {
+		LGEN1_Flag_HT, 0;
+		LGEN1_Flag_ROT, 1;
+		LGEN1_ERR_ElectricalFault, 2;
+		LGEN1_Workload, 3;
+		LGEN1_ActualVal_InductionCurrent, 8;
+		LGEN1_TxData_Selected, 16;
+		RsErr_Stat_LGEN1, 22;
+		LGEN1_ERR_Timeout, 23;
+		LGEN1_Selected_Data_CVal, 24;
+		LGEN1_Flag_PinS_Conn, 32;
+		LGEN1_Flag_PinS1_Conn, 33;
+		LGEN1_Flag_SenseDiff, 34;
+		LGEN1_Flag_DeExcitation, 35;
+		LGEN1_Flag_ParallelMode, 36;
+	}
+	LGEN2_Frm2 : 22, LGEN2, 5 {
+		LGEN2_Flag_HT, 0;
+		LGEN2_Flag_ROT, 1;
+		LGEN2_ERR_ElectricalFault, 2;
+		LGEN2_Workload, 3;
+		LGEN2_ActualVal_InductionCurrent, 8;
+		LGEN2_TxData_Selected, 16;
+		RsErr_Stat_LGEN2, 22;
+		LGEN2_ERR_Timeout, 23;
+		LGEN2_Selected_Data_CVal, 24;
+		LGEN2_Flag_PinS_Conn, 32;
+		LGEN2_Flag_PinS1_Conn, 33;
+		LGEN2_Flag_SenseDiff, 34;
+		LGEN2_Flag_DeExcitation, 35;
+		LGEN2_Flag_ParallelMode, 36;
+	}
+	LGEN3_Frm2 : 23, LGEN3, 5 {
+		LGEN3_Flag_HT, 0;
+		LGEN3_Flag_ROT, 1;
+		LGEN3_ERR_ElectricalFault, 2;
+		LGEN3_Workload, 3;
+		LGEN3_ActualVal_InductionCurrent, 8;
+		LGEN3_TxData_Selected, 16;
+		RsErr_Stat_LGEN3, 22;
+		LGEN3_ERR_Timeout, 23;
+		LGEN3_Selected_Data_CVal, 24;
+		LGEN3_Flag_PinS_Conn, 32;
+		LGEN3_Flag_PinS1_Conn, 33;
+		LGEN3_Flag_SenseDiff, 34;
+		LGEN3_Flag_DeExcitation, 35;
+		LGEN3_Flag_ParallelMode, 36;
+	}
+	RLCM_AR2_Frm1 : 31, RLCM, 5 {
+		CRC_SG_RLCM_E2E_Frm1, 0;
+		SQC_SG_RLCM_E2E_Frm1, 8;
+		WprSpd_Rq_E2E, 16;
+		RainSens_Stat_E2E, 18;
+		LgtSens_Stat_E2E, 20;
+		RainSensLowVolt_Stat_E2E, 22;
+		LoBm_Rq_E2E, 24;
+		LgtSensNightMd_Stat_E2E, 26;
+		Splash_Rq_E2E, 28;
+		Wupd_Stat_RLCM_E2E, 30;
+		TwlgtLvl_Stat_E2E, 32;
+		RsErr_Stat_RLCM_E2E, 36;
+	}
+	RLCM_Frm1 : 32, RLCM, 8 {
+		WprSpd_Rq, 0;
+		RainSens_Stat, 2;
+		LgtSens_Stat, 4;
+		RainSensLowVolt_Stat, 6;
+		LoBm_Rq, 8;
+		LgtSensNightMd_Stat, 10;
+		Splash_Rq, 12;
+		Wupd_Stat_RLCM, 14;
+		TwlgtLvl_Stat, 16;
+		RsErr_Stat_RLCM, 20;
+	}
+	SCA_LIN2_Frm5 : 41, SAM_LIN2_Master, 4 {
+		Resrv1_SCA_LIN2_Frm5, 0;
+		LGEN_NominalVoltage, 1;
+		LGEN_RampTime_LRMode, 8;
+		LGEN_CutOffSpeed_LRMode, 12;
+		Resrv2_SCA_LIN2_Frm5, 16;
+		LGEN_MaxInductionCurrent, 17;
+		LGEN_TxData_Selection, 24;
+		LGEN_OperateInParallelmode, 27;
+	}
+	IBS_Frm1 : 48, IBS, 8 {
+		BatCurr_Cval, 0;
+		BatVolt24_Cval_IBS, 24;
+		IBSErr_Stat, 34;
+		Wupd_Stat_IBS, 36;
+		RsErr_Stat_IBS, 38;
+		IncIntResOrVoltDrop_Stat_IBS, 39;
+		Ri_Impdnc_Cval, 40;
+		NTC_BatTermTemp_Cval, 48;
+		BatTemp_Stat_IBS, 56;
+		BatCurr_Stat_IBS, 58;
+		BatVolt24_Stat_IBS, 60;
+		BatVolt12_Stat_IBS, 62;
+	}
+	IBS_Frm2 : 49, IBS, 8 {
+		BatCpctyFull_Cval, 0;
+		BatCpctyRest_Cval, 8;
+		BatSOH_Cval, 16;
+		BatConfidenceIndex_Stat, 24;
+		MeasSig2_Stat_IBS, 27;
+		BatDpDischrgRestPhase_Stat_IBS, 28;
+		MeasSig3_Stat_IBS, 29;
+		ExtBatChrgDtct_Stat_IBS, 30;
+		FullChrgDet_Cval_IBS, 31;
+		BatVolt12_Cval_IBS, 32;
+		BatTemp_Cval, 40;
+		UBatt24HighRes_Cval, 48;
+	}
+	IBS_Frm3 : 50, IBS, 8 {
+		BatRplcmntCntr_Cval_IBS, 0;
+		BatRstCntr_Cval_IBS, 5;
+		EqulbrErr_Stat, 10;
+		EepErr_Stat_IBS, 12;
+		HW_Err_Stat_IBS, 14;
+		MinBatCpctyCRANK_Cval_IBS, 16;
+		Ri_Crank_Cval, 24;
+		UBattMinLastCrank_Cval, 32;
+		IBattMinLastCrank_Cval, 48;
+	}
+	IBS_Frm4 : 51, IBS, 8 {
+		CapLossTop_Cval_IBS, 0;
+		SOC_UpTlrnc_Cval_IBS, 8;
+		SOC_LoTlrnc_Cval_IBS, 16;
+		AvgQscntCurrRestPhase_Cval_IBS, 24;
+		DIAG_TX_REQUEST_IBS, 31;
+		AhChrgCycle_Cval_IBS, 32;
+		AhDischrgCycle_Cval_IBS, 40;
+		SOH_CnfdncIndex_Stat_IBS, 48;
+		WireInvErr_Stat, 51;
+		ShntDiscntErr_Stat, 53;
+		TmInSrv_Cval, 55;
+	}
+	IBS_Frm5_AR2 : 52, IBS, 8 {
+		CRC_SG_IBS_Frm5_AR2, 0;
+		SQC_SG_IBS_Frm5_AR2, 8;
+		BatPlDscnFl_Stat_E2E, 12;
+		BatSOFeStrExtLig_Cval_E2E, 14;
+		BatVolt12_Cval_E2E, 24;
+		BatVolt24_Cval_E2E, 32;
+		EqulbrErr_Stat_E2E, 42;
+		NmbrOfCycls_Cval, 44;
+		CcksmIBSSfPrm_Cval_E2E, 56;
+	}
+	IBS_Frm6 : 53, IBS, 8 {
+		BatSOFHVReq_Cval, 0;
+		VltRppl_Rq_IBS, 8;
+		EqulbrErr_Stat_IBS, 10;
+		EepErr_Stat_IBS3, 12;
+		HW_Err_Stat_IBS3, 14;
+		MinBatCpctyCRANK_Cval_IBS3, 16;
+		Ri_Crank_Cval_IBS3, 24;
+		UBattMinLastCrank_Cval_IBS3, 32;
+		IBattMinLastCrank_Cval_IBS3, 48;
+	}
+	SCA_Frm4 : 55, SAM_LIN2_Master, 8 {
+		NomCapDetBat_Cval_IBS3, 0;
+		BatType_Stat_IBS3, 8;
+		NomIntResistDetBat_Cval_IBS3, 12;
+		BatMinU0_Cval_IBS3, 22;
+		BatMaxU0_Cval_IBS3, 32;
+		RedcMinBatSftyOffst_Stat_IBS3, 42;
+		WrnI_OvFlw_Cval_PNM_IBS3, 44;
+		Wrn24V_UnFlw_Cval_PNM_IBS3, 48;
+		WrnQ_OvFlw_Cval_PNM_IBS3, 52;
+		EQWrk_Stat, 56;
+	}
+}
+
+
+Diagnostic_frames {
+	MasterReq : 60 {
+		MasterReqB0, 0;
+		MasterReqB1, 8;
+		MasterReqB2, 16;
+		MasterReqB3, 24;
+		MasterReqB4, 32;
+		MasterReqB5, 40;
+		MasterReqB6, 48;
+		MasterReqB7, 56;
+	}
+	SlaveResp : 61 {
+		SlaveRespB0, 0;
+		SlaveRespB1, 8;
+		SlaveRespB2, 16;
+		SlaveRespB3, 24;
+		SlaveRespB4, 32;
+		SlaveRespB5, 40;
+		SlaveRespB6, 48;
+		SlaveRespB7, 56;
+	}
+}
+
+Node_attributes {
+	IBS {
+		LIN_protocol = "2.0";
+		configured_NAD = 0x03;
+		product_id = 0x0036, 0x0001, 0x00;
+		response_error = RsErr_Stat_IBS;
+		P2_min = 50 ms;
+		ST_min = 50 ms;
+		configurable_frames {
+			IBS_Frm1 = 0x1000;
+			IBS_Frm2 = 0x1001;
+			IBS_Frm3 = 0x1002;
+			SCA_Frm2_MBT = 0x1005;
+			SCA_Frm3 = 0x1006;
+			IBS_Frm4 = 0x1003;
+			IBS_Frm5_AR2 = 0x1004;
+			IBS_Frm6 = 0x1007;
+			SCA_Frm1 = 0x1009;
+			SCA_Frm4 = 0x1008;
+		}
+	}
+	LGEN0 {
+		LIN_protocol = "2.0";
+		configured_NAD = 0x0E;
+		product_id = 0x0040, 0x7008, 0x00;
+		response_error = RsErr_Stat_LGEN0;
+		P2_min = 0 ms;
+		ST_min = 0 ms;
+		configurable_frames {
+			LGEN0_Frm3 = 0x03B6;
+			SCA_LIN2_Frm5 = 0x03B3;
+		}
+	}
+	LGEN1 {
+		LIN_protocol = "2.0";
+		configured_NAD = 0x0F;
+		product_id = 0x0040, 0x7008, 0x00;
+		response_error = RsErr_Stat_LGEN1;
+		P2_min = 0 ms;
+		ST_min = 0 ms;
+		configurable_frames {
+			LGEN1_Frm2 = 0x03B7;
+			SCA_LIN2_Frm5 = 0x03B3;
+		}
+	}
+	LGEN2 {
+		LIN_protocol = "2.0";
+		configured_NAD = 0x10;
+		product_id = 0x0040, 0x7008, 0x00;
+		response_error = RsErr_Stat_LGEN2;
+		P2_min = 0 ms;
+		ST_min = 0 ms;
+		configurable_frames {
+			LGEN2_Frm2 = 0x03B8;
+			SCA_LIN2_Frm5 = 0x03B3;
+		}
+	}
+	LGEN3 {
+		LIN_protocol = "2.0";
+		configured_NAD = 0x11;
+		product_id = 0x0040, 0x7008, 0x00;
+		response_error = RsErr_Stat_LGEN3;
+		P2_min = 0 ms;
+		ST_min = 0 ms;
+		configurable_frames {
+			LGEN3_Frm2 = 0x03B9;
+			SCA_LIN2_Frm5 = 0x03B3;
+		}
+	}
+	RLCM {
+		LIN_protocol = "2.1";
+		configured_NAD = 0x02;
+		initial_NAD = 0x02;
+		product_id = 0x0036, 0x001A, 0x00;
+		response_error = RsErr_Stat_RLCM;
+		P2_min = 50 ms;
+		ST_min = 0 ms;
+		configurable_frames {
+			RLCM_Frm1;
+			SCA_Frm1;
+			RLCM_AR2_Frm1;
+		}
+	}
+}
+
+
+Schedule_tables {
+	SCH_2_BusChas {
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_Frm1	delay	10.000 ms;
+		SCA_LIN2_Frm5	delay	8.000 ms;
+		LGEN1_Frm2	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		LGEN2_Frm2	delay	8.000 ms;
+		LGEN3_Frm2	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_Frm1	delay	10.000 ms;
+		IBS_Frm1	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		SCA_Frm2_MBT	delay	10.000 ms;
+		IBS_Frm2	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_Frm1	delay	10.000 ms;
+		SCA_LIN2_Frm5	delay	8.000 ms;
+		LGEN1_Frm2	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		LGEN2_Frm2	delay	8.000 ms;
+		LGEN3_Frm2	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_Frm1	delay	10.000 ms;
+		IBS_Frm1	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		IBS_Frm3	delay	10.000 ms;
+		IBS_Frm4	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_Frm1	delay	10.000 ms;
+		SCA_LIN2_Frm5	delay	8.000 ms;
+		LGEN1_Frm2	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		LGEN2_Frm2	delay	8.000 ms;
+		LGEN3_Frm2	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_Frm1	delay	10.000 ms;
+		IBS_Frm1	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		SCA_Frm3	delay	10.000 ms;
+	}
+	SCH_MRq {
+		MasterReq	delay	10.000 ms;
+	}
+	SCH_Norm2_Full_E2E {
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_AR2_Frm1	delay	10.000 ms;
+		SCA_LIN2_Frm5	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		LGEN0_Frm3	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_AR2_Frm1	delay	10.000 ms;
+		IBS_Frm1	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		SCA_Frm2_MBT	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_AR2_Frm1	delay	10.000 ms;
+		SCA_LIN2_Frm5	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		LGEN0_Frm3	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_AR2_Frm1	delay	10.000 ms;
+		IBS_Frm1	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		IBS_Frm2	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_AR2_Frm1	delay	10.000 ms;
+		SCA_LIN2_Frm5	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		LGEN0_Frm3	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_AR2_Frm1	delay	10.000 ms;
+		IBS_Frm1	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		IBS_Frm3	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_AR2_Frm1	delay	10.000 ms;
+		SCA_LIN2_Frm5	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		LGEN0_Frm3	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_AR2_Frm1	delay	10.000 ms;
+		IBS_Frm1	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		IBS_Frm4	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_AR2_Frm1	delay	10.000 ms;
+		SCA_LIN2_Frm5	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		LGEN0_Frm3	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_AR2_Frm1	delay	10.000 ms;
+		IBS_Frm1	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		SCA_Frm3	delay	10.000 ms;
+	}
+	SCH_Norm2_Full_E2E_IBS3 {
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_AR2_Frm1	delay	8.000 ms;
+		SCA_LIN2_Frm5	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		LGEN0_Frm3	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_AR2_Frm1	delay	8.000 ms;
+		IBS_Frm1	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		IBS_Frm2	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_AR2_Frm1	delay	8.000 ms;
+		SCA_LIN2_Frm5	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		LGEN0_Frm3	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_AR2_Frm1	delay	8.000 ms;
+		IBS_Frm1	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		IBS_Frm4	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_AR2_Frm1	delay	8.000 ms;
+		SCA_LIN2_Frm5	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		LGEN0_Frm3	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_AR2_Frm1	delay	8.000 ms;
+		IBS_Frm1	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		IBS_Frm5_AR2	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_AR2_Frm1	delay	8.000 ms;
+		SCA_LIN2_Frm5	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		LGEN0_Frm3	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_AR2_Frm1	delay	8.000 ms;
+		IBS_Frm1	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		IBS_Frm6	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_AR2_Frm1	delay	8.000 ms;
+		SCA_LIN2_Frm5	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		LGEN0_Frm3	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_AR2_Frm1	delay	8.000 ms;
+		IBS_Frm1	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		SCA_Frm4	delay	10.000 ms;
+	}
+	SCH_Norm_Full {
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_Frm1	delay	10.000 ms;
+		SCA_LIN2_Frm5	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		LGEN0_Frm3	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_Frm1	delay	10.000 ms;
+		IBS_Frm1	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		SCA_Frm2_MBT	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_Frm1	delay	10.000 ms;
+		SCA_LIN2_Frm5	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		LGEN0_Frm3	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_Frm1	delay	10.000 ms;
+		IBS_Frm1	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		IBS_Frm2	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_Frm1	delay	10.000 ms;
+		SCA_LIN2_Frm5	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		LGEN0_Frm3	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_Frm1	delay	10.000 ms;
+		IBS_Frm1	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		IBS_Frm3	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_Frm1	delay	10.000 ms;
+		SCA_LIN2_Frm5	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		LGEN0_Frm3	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_Frm1	delay	10.000 ms;
+		IBS_Frm1	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		IBS_Frm4	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_Frm1	delay	10.000 ms;
+		SCA_LIN2_Frm5	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		LGEN0_Frm3	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_Frm1	delay	10.000 ms;
+		IBS_Frm1	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		SCA_Frm3	delay	10.000 ms;
+	}
+	SCH_Norm_Full_IBS3 {
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_Frm1	delay	10.000 ms;
+		SCA_LIN2_Frm5	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		LGEN0_Frm3	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_Frm1	delay	10.000 ms;
+		IBS_Frm1	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		IBS_Frm2	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_Frm1	delay	10.000 ms;
+		SCA_LIN2_Frm5	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		LGEN0_Frm3	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_Frm1	delay	10.000 ms;
+		IBS_Frm1	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		IBS_Frm4	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_Frm1	delay	10.000 ms;
+		SCA_LIN2_Frm5	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		LGEN0_Frm3	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_Frm1	delay	10.000 ms;
+		IBS_Frm1	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		IBS_Frm5_AR2	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_Frm1	delay	10.000 ms;
+		SCA_LIN2_Frm5	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		LGEN0_Frm3	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_Frm1	delay	10.000 ms;
+		IBS_Frm1	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		IBS_Frm6	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_Frm1	delay	10.000 ms;
+		SCA_LIN2_Frm5	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		LGEN0_Frm3	delay	8.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		RLCM_Frm1	delay	10.000 ms;
+		IBS_Frm1	delay	10.000 ms;
+		SCA_Frm1	delay	10.000 ms;
+		SCA_Frm4	delay	10.000 ms;
+	}
+	SCH_SRs {
+		SlaveResp	delay	10.000 ms;
+	}
+}
+
+
+Signal_encoding_types {
+	c01_Conn_NotConn {
+		logical_value, 0, "CONN";
+		logical_value, 1, "NOT_CONN";
+	}
+	c01_Diag_Tx_Rq {
+		logical_value, 0, "NO_TX_REQ";
+		logical_value, 1, "TX_REQ";
+	}
+	c01_False_True {
+		logical_value, 0, "FALSE";
+		logical_value, 1, "TRUE";
+	}
+	c01_NotActv_Actv {
+		logical_value, 0, "NACT";
+		logical_value, 1, "ACTV";
+	}
+	c01_Ok_Err {
+		logical_value, 0, "NOERR";
+		logical_value, 1, "ERR";
+	}
+	c01_RegDeExcitation {
+		logical_value, 0, "OFF";
+		logical_value, 1, "ON";
+	}
+	c01_RegParaOp {
+		logical_value, 0, "OFF";
+		logical_value, 1, "ON";
+	}
+	c02_LIN_Slave_WUP {
+		logical_value, 0, "NO_WUP";
+		logical_value, 1, "ACTIVE_WUP";
+		logical_value, 2, "RES";
+		logical_value, 3, "SNA";
+	}
+	c02_NACT_ACT_ERR_SNA {
+		logical_value, 0, "NACT";
+		logical_value, 1, "ACT";
+		logical_value, 2, "ERR";
+		logical_value, 3, "SNA";
+	}
+	c02_NoErr_Err_SNA {
+		logical_value, 0, "NOERR";
+		logical_value, 1, "ERR";
+		logical_value, 2, "RES";
+		logical_value, 3, "SNA";
+	}
+	c02_NoError_Error {
+		logical_value, 0, "NOERR";
+		logical_value, 1, "ERR";
+		logical_value, 2, "RES";
+		logical_value, 3, "SNA";
+	}
+	c02_NoFlt_Flt_Err {
+		logical_value, 0, "NOFLT";
+		logical_value, 1, "FAULT";
+		logical_value, 2, "ERR";
+		logical_value, 3, "SNA";
+	}
+	c02_NotActv_low_high_sna {
+		logical_value, 0, "NACT";
+		logical_value, 1, "LSPD";
+		logical_value, 2, "HSPD";
+		logical_value, 3, "SNA";
+	}
+	c02_NotFail_Fail_Res {
+		logical_value, 0, "NFAIL";
+		logical_value, 1, "FAIL";
+		logical_value, 2, "RES";
+		logical_value, 3, "SNA";
+	}
+	c02_OK_CurrUflw_CurrOflw_SNA {
+		logical_value, 0, "OK";
+		logical_value, 1, "CURR_UFLW";
+		logical_value, 2, "CURR_OFLW";
+		logical_value, 3, "SNA";
+	}
+	c02_OK_TempUflw_TempOflw_SNA {
+		logical_value, 0, "OK";
+		logical_value, 1, "TEMP_UFLW";
+		logical_value, 2, "TEMP_OFLW";
+		logical_value, 3, "SNA";
+	}
+	c02_OK_VoltUflw_VoltOflw_SNA {
+		logical_value, 0, "OK";
+		logical_value, 1, "VOLT_UFLW";
+		logical_value, 2, "VOLT_OFLW";
+		logical_value, 3, "SNA";
+	}
+	c02_Off_On_Err {
+		logical_value, 0, "OFF";
+		logical_value, 1, "ON";
+		logical_value, 2, "ERR";
+		logical_value, 3, "SNA";
+	}
+	c02_Off_On_Res {
+		logical_value, 0, "OFF";
+		logical_value, 1, "ON";
+		logical_value, 2, "RES";
+		logical_value, 3, "SNA";
+	}
+	c02_PkPosn {
+		logical_value, 0, "PARK";
+		logical_value, 1, "NPARK";
+		logical_value, 2, "ERR";
+		logical_value, 3, "SNA";
+	}
+	c02_Request {
+		logical_value, 0, "IDLE";
+		logical_value, 1, "REQ";
+		logical_value, 2, "RES";
+		logical_value, 3, "SNA";
+	}
+	c02_Splash_Stat {
+		logical_value, 0, "NOSPLASH";
+		logical_value, 1, "SPLASH";
+		logical_value, 2, "RES";
+		logical_value, 3, "SNA";
+	}
+	c02_ok_Low_res_sna {
+		logical_value, 0, "VOLTOK";
+		logical_value, 1, "VOLTLOW";
+		logical_value, 2, "RES";
+		logical_value, 3, "SNA";
+	}
+	c03_DataSelection_LINGenerator {
+		logical_value, 0, "NoData";
+		logical_value, 1, "USoll";
+		logical_value, 2, "UMeas";
+		logical_value, 3, "TEMP";
+		logical_value, 4, "RPM";
+		logical_value, 5, "RES_2";
+		logical_value, 6, "RES_3";
+		logical_value, 7, "SNA";
+	}
+	c03_IBS_BatModel_Stat {
+		logical_value, 0, "INIT_40";
+		logical_value, 1, "INIT_50";
+		logical_value, 2, "INIT_60";
+		logical_value, 3, "INIT_70";
+		logical_value, 4, "INIT_80";
+		logical_value, 5, "INIT_90";
+		logical_value, 6, "INIT_100";
+		logical_value, 7, "SNA";
+	}
+	c04_0_to_15_1_SNA_na {
+		physical_value, 0, 15, 1, 0, "NoUnit";
+	}
+	c04_Abschaltdrehzahl_LR_LINGen {
+		logical_value, 0, "RPM_2000";
+		logical_value, 1, "RPM_2090";
+		logical_value, 2, "RPM_2180";
+		logical_value, 3, "RPM_2290";
+		logical_value, 4, "RPM_2400";
+		logical_value, 5, "RPM_2530";
+		logical_value, 6, "RPM_2670";
+		logical_value, 7, "RPM_2820";
+		logical_value, 8, "RPM_3000";
+		logical_value, 9, "RPM_3200";
+		logical_value, 10, "RPM_3430";
+		logical_value, 11, "RPM_3690";
+		logical_value, 12, "RPM_4000";
+		logical_value, 13, "RPM_4800";
+		logical_value, 14, "RPM_6000";
+		logical_value, 15, "immeraktiv";
+	}
+	c04_BatTechnology_ERR_SNA {
+		logical_value, 0, "PbCa";
+		logical_value, 1, "PbSb";
+		logical_value, 2, "ENHF";
+		logical_value, 3, "GEL";
+		logical_value, 4, "AGM";
+		logical_value, 14, "ERR";
+		logical_value, 15, "SNA";
+	}
+	c04_RampTime_LR_LINGen_sna_na {
+		logical_value, 0, "t_0_0";
+		logical_value, 1, "t_0_25";
+		logical_value, 2, "t_0_50";
+		logical_value, 3, "t_0_75";
+		logical_value, 4, "t_1";
+		logical_value, 5, "t_2";
+		logical_value, 6, "t_3";
+		logical_value, 7, "t_4";
+		logical_value, 8, "t_5";
+		logical_value, 9, "t_6";
+		logical_value, 10, "t_7";
+		logical_value, 11, "t_8";
+		logical_value, 12, "t_9";
+		logical_value, 13, "t_10";
+		logical_value, 14, "t_12";
+		logical_value, 15, "t_15";
+	}
+	c04_Steps_1_5_sna {
+		logical_value, 0, "RES";
+		logical_value, 1, "STEP1";
+		logical_value, 2, "STEP2";
+		logical_value, 3, "STEP3";
+		logical_value, 4, "STEP4";
+		logical_value, 5, "STEP5";
+		logical_value, 6, "RES2";
+		logical_value, 7, "RES3";
+		logical_value, 8, "RES4";
+		logical_value, 9, "RES5";
+		logical_value, 10, "RES6";
+		logical_value, 11, "RES7";
+		logical_value, 12, "RES8";
+		logical_value, 13, "RES9";
+		logical_value, 14, "ERR";
+		logical_value, 15, "SNA";
+	}
+	c04_Steps_1_7_sna {
+		logical_value, 0, "RES";
+		logical_value, 1, "STEP1";
+		logical_value, 2, "STEP2";
+		logical_value, 3, "STEP3";
+		logical_value, 4, "STEP4";
+		logical_value, 5, "STEP5";
+		logical_value, 6, "STEP6";
+		logical_value, 7, "STEP7";
+		logical_value, 8, "RES2";
+		logical_value, 9, "RES3";
+		logical_value, 10, "RES4";
+		logical_value, 11, "RES5";
+		logical_value, 12, "RES6";
+		logical_value, 13, "RES7";
+		logical_value, 14, "ERR";
+		logical_value, 15, "SNA";
+	}
+	c04_Type_1_15 {
+		logical_value, 0, "TYPE1";
+		logical_value, 1, "TYPE2";
+		logical_value, 2, "TYPE3";
+		logical_value, 3, "TYPE4";
+		logical_value, 4, "TYPE5";
+		logical_value, 5, "TYPE6";
+		logical_value, 6, "TYPE7";
+		logical_value, 7, "TYPE8";
+		logical_value, 8, "TYPE9";
+		logical_value, 9, "TYPE10";
+		logical_value, 10, "TYPE11";
+		logical_value, 11, "TYPE12";
+		logical_value, 12, "TYPE13";
+		logical_value, 13, "TYPE14";
+		logical_value, 14, "TYPE15";
+		logical_value, 15, "SNA";
+	}
+	c04_VehModel_1_15 {
+		logical_value, 0, "MODEL_1";
+		logical_value, 1, "MODEL_2";
+		logical_value, 2, "MODEL_3";
+		logical_value, 3, "MODEL_4";
+		logical_value, 4, "MODEL_5";
+		logical_value, 5, "MODEL_6";
+		logical_value, 6, "MODEL_7";
+		logical_value, 7, "MODEL_8";
+		logical_value, 8, "MODEL_9";
+		logical_value, 9, "MODEL_10";
+		logical_value, 10, "MODEL_11";
+		logical_value, 11, "MODEL_12";
+		logical_value, 12, "MODEL_13";
+		logical_value, 13, "MODEL_14";
+		logical_value, 14, "MODEL_15";
+		logical_value, 15, "SNA";
+	}
+	c04_Wrn24V_UnFlw_Cval_PNM {
+		physical_value, 0, 14, 0.33, 20, "V";
+		logical_value, 15, "SNA";
+	}
+	c04_WrnI_OvFlw_Cval {
+		physical_value, 0, 14, 1, -15, "A";
+		logical_value, 15, "SNA";
+	}
+	c04_WrnOvFlw_PNM {
+		physical_value, 0, 14, -1, -1, "A";
+		logical_value, 15, "SNA";
+	}
+	c04_WrnQ_OvFlw_Cval_PNM {
+		physical_value, 0, 14, 7.86, 0, "Ah";
+		logical_value, 15, "SNA";
+	}
+	c04_t2_Cval_PNM {
+		physical_value, 0, 8, 10, 35, "ms";
+		logical_value, 14, "ERR";
+		logical_value, 15, "SNA";
+	}
+	c05_0_to_30_1 {
+		physical_value, 0, 30, 1, 0, "NoUnit";
+		logical_value, 31, "SNA";
+	}
+	c05_WorkLoad_LINGenerator {
+		physical_value, 0, 31, 3.2258064516, 0, "NoUnit";
+	}
+	c05_t1_Cval_PNM {
+		physical_value, 0, 24, 5, 0, "s";
+		logical_value, 30, "ERR";
+		logical_value, 31, "SNA";
+	}
+	c06_I0_Cval_PNM {
+		physical_value, 0, 60, -0.25, 0, "A";
+		logical_value, 61, "RES";
+		logical_value, 62, "ERR";
+		logical_value, 63, "SNA";
+	}
+	c07_AvgQscntCurrRestPhase_Cval {
+		logical_value, 0, "O_mA";
+		logical_value, 1, "m20_mA";
+		logical_value, 2, "m40_mA";
+		logical_value, 3, "m60_mA";
+		logical_value, 4, "m80_mA";
+		logical_value, 5, "m100_mA";
+		logical_value, 6, "m120_mA";
+		logical_value, 7, "m140_mA";
+		logical_value, 8, "m160_mA";
+		logical_value, 9, "m180_mA";
+		logical_value, 10, "m200_mA";
+		logical_value, 11, "m220_mA";
+		logical_value, 12, "m240_mA";
+		logical_value, 13, "m260_mA";
+		logical_value, 14, "m280_mA";
+		logical_value, 15, "m300_mA";
+		logical_value, 16, "m320_mA";
+		logical_value, 17, "m340_mA";
+		logical_value, 18, "m360_mA";
+		logical_value, 19, "m380_mA";
+		logical_value, 20, "m400_mA";
+		logical_value, 21, "m420_mA";
+		logical_value, 22, "m440_mA";
+		logical_value, 23, "m460_mA";
+		logical_value, 24, "m480_mA";
+		logical_value, 25, "m500_mA";
+		logical_value, 26, "m520_mA";
+		logical_value, 27, "m540_mA";
+		logical_value, 28, "m560_mA";
+		logical_value, 29, "m580_mA";
+		logical_value, 30, "m600_mA";
+		logical_value, 31, "m620_mA";
+		logical_value, 32, "m640_mA";
+		logical_value, 33, "m660_mA";
+		logical_value, 34, "m680_mA";
+		logical_value, 35, "m700_mA";
+		logical_value, 36, "m720_mA";
+		logical_value, 37, "m740_mA";
+		logical_value, 38, "m760_mA";
+		logical_value, 39, "m780_mA";
+		logical_value, 40, "m800_mA";
+		logical_value, 41, "m820_mA";
+		logical_value, 42, "m840_mA";
+		logical_value, 43, "m860_mA";
+		logical_value, 44, "m880_mA";
+		logical_value, 45, "m900_mA";
+		logical_value, 46, "m920_mA";
+		logical_value, 47, "m940_mA";
+		logical_value, 48, "m960_mA";
+		logical_value, 49, "m980_mA";
+		logical_value, 50, "m1000_mA";
+		logical_value, 51, "m1050_mA";
+		logical_value, 52, "m1100_mA";
+		logical_value, 53, "m1150_mA";
+		logical_value, 54, "m1200_mA";
+		logical_value, 55, "m1250_mA";
+		logical_value, 56, "m1300_mA";
+		logical_value, 57, "m1350_mA";
+		logical_value, 58, "m1400_mA";
+		logical_value, 59, "m1450_mA";
+		logical_value, 60, "m1500_mA";
+		logical_value, 61, "m1550_mA";
+		logical_value, 62, "m1600_mA";
+		logical_value, 63, "m1650_mA";
+		logical_value, 64, "m1700_mA";
+		logical_value, 65, "m1750_mA";
+		logical_value, 66, "m1800_mA";
+		logical_value, 67, "m1850_mA";
+		logical_value, 68, "m1900_mA";
+		logical_value, 69, "m1950_mA";
+		logical_value, 70, "m2000_mA";
+		logical_value, 71, "m2050_mA";
+		logical_value, 72, "m2100_mA";
+		logical_value, 73, "m2150_mA";
+		logical_value, 74, "m2200_mA";
+		logical_value, 75, "m2250_mA";
+		logical_value, 76, "m2300_mA";
+		logical_value, 77, "m2350_mA";
+		logical_value, 78, "m2400_mA";
+		logical_value, 79, "m2450_mA";
+		logical_value, 80, "m2500_mA";
+		logical_value, 81, "m2550_mA";
+		logical_value, 82, "m2600_mA";
+		logical_value, 83, "m2650_mA";
+		logical_value, 84, "m2700_mA";
+		logical_value, 85, "m2750_mA";
+		logical_value, 86, "m2800_mA";
+		logical_value, 87, "m2850_mA";
+		logical_value, 88, "m2900_mA";
+		logical_value, 89, "m2950_mA";
+		logical_value, 90, "m3000_mA";
+		logical_value, 91, "m5_A";
+		logical_value, 92, "m7_A";
+		logical_value, 93, "m9_A";
+		logical_value, 94, "m11_A";
+		logical_value, 95, "m13_A";
+		logical_value, 96, "m15_A";
+		logical_value, 97, "m17_A";
+		logical_value, 98, "m19_A";
+		logical_value, 99, "m21_A";
+		logical_value, 100, "m23_A";
+		logical_value, 101, "m25_A";
+		logical_value, 102, "m27_A";
+		logical_value, 103, "m29_A";
+		logical_value, 104, "m31_A";
+		logical_value, 105, "m33_A";
+		logical_value, 106, "m35_A";
+		logical_value, 107, "m37_A";
+		logical_value, 108, "m39_A";
+		logical_value, 109, "m41_A";
+		logical_value, 110, "m43_A";
+		logical_value, 111, "m45_A";
+		logical_value, 112, "m47_A";
+		logical_value, 113, "m49_A";
+		logical_value, 114, "m51_A";
+		logical_value, 115, "m53_A";
+		logical_value, 116, "m55_A";
+		logical_value, 117, "m57_A";
+		logical_value, 118, "m59_A";
+		logical_value, 119, "m61_A";
+		logical_value, 120, "m63_A";
+		logical_value, 121, "m65_A";
+		logical_value, 122, "m67_A";
+		logical_value, 123, "m69_A";
+		logical_value, 124, "m71_A";
+		logical_value, 125, "m73_A";
+		logical_value, 126, "m75_A";
+		logical_value, 127, "SNA";
+	}
+	c07_I2_Cval_PNM {
+		physical_value, 0, 100, -10, -1000, "A";
+		logical_value, 126, "ERR";
+		logical_value, 127, "SNA";
+	}
+	c07_I3_Cval_PNM {
+		physical_value, 0, 100, -10, 0, "A";
+		logical_value, 126, "ERR";
+		logical_value, 127, "SNA";
+	}
+	c07_Max_InductionCurrent_LINGEN {
+		physical_value, 0, 126, 0.1, 0, "NoUnit";
+		logical_value, 127, "SNA";
+	}
+	c07_NomVolt_LINGenerator {
+		physical_value, 0, 100, 0.1, 22, "NoUnit";
+		logical_value, 101, "MaxVolt1";
+		logical_value, 102, "MaxVolt2";
+		logical_value, 103, "MaxVolt3";
+		logical_value, 104, "MaxVolt4";
+		logical_value, 105, "MaxVolt5";
+		logical_value, 106, "MaxVolt6";
+		logical_value, 107, "MaxVolt7";
+		logical_value, 108, "MaxVolt8";
+		logical_value, 109, "MaxVolt9";
+		logical_value, 110, "MaxVolt10";
+		logical_value, 111, "MaxVolt11";
+		logical_value, 112, "MaxVolt12";
+		logical_value, 113, "MaxVolt13";
+		logical_value, 114, "MaxVolt14";
+		logical_value, 115, "MaxVolt15";
+		logical_value, 116, "MaxVolt16";
+		logical_value, 117, "MaxVolt17";
+		logical_value, 118, "MaxVolt18";
+		logical_value, 119, "MaxVolt19";
+		logical_value, 120, "MaxVolt20";
+		logical_value, 121, "MaxVolt21";
+		logical_value, 122, "MaxVolt22";
+		logical_value, 123, "MaxVolt23";
+		logical_value, 124, "MaxVolt24";
+		logical_value, 125, "MaxVolt25";
+		logical_value, 126, "MaxVolt26";
+		logical_value, 127, "SNA";
+	}
+	c07_T_Cval_PNM {
+		physical_value, 0, 75, 1, -25, "°C";
+		logical_value, 126, "ERR";
+		logical_value, 127, "SNA";
+	}
+	c08_0_to_254_1_SNA_VLD {
+		physical_value, 0, 254, 1, 0, "NoUnit";
+		logical_value, 255, "SNA";
+	}
+	c08_0_to_255_1 {
+		physical_value, 0, 255, 1, 0, "NoUnit";
+	}
+	c08_A_0_500_2_Err_SNA {
+		physical_value, 0, 250, 2, 0, "A";
+		logical_value, 254, "ERR";
+		logical_value, 255, "SNA";
+	}
+	c08_ActualVoltage_LINGenerator {
+		physical_value, 0, 200, 0.05, 22, "NoUnit";
+	}
+	c08_Ah_0_500_2_Ext {
+		physical_value, 0, 250, 2, 0, "Ah";
+		logical_value, 251, "TMO";
+		logical_value, 252, "STP";
+		logical_value, 253, "ERR";
+		logical_value, 254, "RUN";
+		logical_value, 255, "SNA";
+	}
+	c08_Ah_0_to_500_2 {
+		physical_value, 0, 250, 2, 0, "Ah";
+		logical_value, 255, "SNA";
+	}
+	c08_Ah_0_to_500_2_ERR {
+		physical_value, 0, 250, 2, 0, "Ah";
+		logical_value, 254, "ERR";
+		logical_value, 255, "SNA";
+	}
+	c08_I1_Cval_PNM {
+		physical_value, 0, 250, -2, 0, "A";
+		logical_value, 254, "ERR";
+		logical_value, 255, "SNA";
+	}
+	c08_NomVal_InductCurr_LGen {
+		physical_value, 0, 252, 0.05, 0, "NoUnit";
+		logical_value, 255, "SNA";
+	}
+	c08_V_14d9_36d9_0d1_RES {
+		physical_value, 1, 220, 0.1, 14.9, "V";
+		logical_value, 0, "U14d9";
+		logical_value, 221, "U37";
+		logical_value, 255, "SNA";
+	}
+	c08_V_22_31_0d05_RES {
+		physical_value, 0, 181, 0.05, 22, "V";
+		logical_value, 254, "U28d3_1";
+		logical_value, 255, "U28d3_2";
+	}
+	c08_V_4_to_18_0k1 {
+		physical_value, 0, 140, 0.1, 4, "V";
+		logical_value, 255, "SNA";
+	}
+	c08_V_4_to_18_0k1_ERR_SNA {
+		physical_value, 0, 140, 0.1, 4, "V";
+		logical_value, 247, "CALIB_ERR";
+		logical_value, 248, "VOLT12_4UFLW";
+		logical_value, 249, "VOLT12_18OFLW";
+		logical_value, 250, "SM_ERR";
+		logical_value, 251, "CH_ERR";
+		logical_value, 252, "VREF_ERR";
+		logical_value, 253, "VOLT12_UFLW";
+		logical_value, 254, "VOLT12_OFLW";
+		logical_value, 255, "SNA";
+	}
+	c08_degreeCelsius_m40_to_p125_1 {
+		physical_value, 0, 165, 1, -40, "°C";
+		logical_value, 254, "ERR";
+		logical_value, 255, "SNA";
+	}
+	c08_h_0_to_12216_24 {
+		physical_value, 0, 509, 24, 0, "h";
+		logical_value, 510, "ERR";
+		logical_value, 511, "SNA";
+	}
+	c08_mOhm_0_to_253_0k1 {
+		physical_value, 0, 253, 0.1, 0, "mOhm";
+		logical_value, 254, "ERR";
+		logical_value, 255, "SNA";
+	}
+	c08_mOhm_0_to_254_0k1 {
+		physical_value, 0, 254, 0.1, 0, "mOhm";
+		logical_value, 255, "SNA";
+	}
+	c08_percent_0_to_100_1 {
+		physical_value, 0, 100, 1, 0, "%";
+		logical_value, 255, "SNA";
+	}
+	c08_rpm_LGEN {
+		logical_value, 0, "n_blw_n0";
+		logical_value, 1, "n_567";
+		logical_value, 2, "n_569";
+		logical_value, 3, "n_571";
+		logical_value, 4, "n_574";
+		logical_value, 5, "n_576";
+		logical_value, 6, "n_578";
+		logical_value, 7, "n_581";
+		logical_value, 8, "n_583";
+		logical_value, 9, "n_585";
+		logical_value, 10, "n_588";
+		logical_value, 11, "n_590";
+		logical_value, 12, "n_593";
+		logical_value, 13, "n_595";
+		logical_value, 14, "n_598";
+		logical_value, 15, "n_600";
+		logical_value, 16, "n_603";
+		logical_value, 17, "n_605";
+		logical_value, 18, "n_608";
+		logical_value, 19, "n_610";
+		logical_value, 20, "n_613";
+		logical_value, 21, "n_615";
+		logical_value, 22, "n_618";
+		logical_value, 23, "n_621";
+		logical_value, 24, "n_623";
+		logical_value, 25, "n_626";
+		logical_value, 26, "n_629";
+		logical_value, 27, "n_632";
+		logical_value, 28, "n_634";
+		logical_value, 29, "n_637";
+		logical_value, 30, "n_640";
+		logical_value, 31, "n_643";
+		logical_value, 32, "n_646";
+		logical_value, 33, "n_649";
+		logical_value, 34, "n_652";
+		logical_value, 35, "n_655";
+		logical_value, 36, "n_658";
+		logical_value, 37, "n_661";
+		logical_value, 38, "n_664";
+		logical_value, 39, "n_667";
+		logical_value, 40, "n_670";
+		logical_value, 41, "n_673";
+		logical_value, 42, "n_676";
+		logical_value, 43, "n_679";
+		logical_value, 44, "n_682";
+		logical_value, 45, "n_686";
+		logical_value, 46, "n_689";
+		logical_value, 47, "n_692";
+		logical_value, 48, "n_696";
+		logical_value, 49, "n_699";
+		logical_value, 50, "n_702";
+		logical_value, 51, "n_706";
+		logical_value, 52, "n_709";
+		logical_value, 53, "n_713";
+		logical_value, 54, "n_716";
+		logical_value, 55, "n_720";
+		logical_value, 56, "n_724";
+		logical_value, 57, "n_727";
+		logical_value, 58, "n_731";
+		logical_value, 59, "n_735";
+		logical_value, 60, "n_738";
+		logical_value, 61, "n_742";
+		logical_value, 62, "n_746";
+		logical_value, 63, "n_750";
+		logical_value, 64, "n_754";
+		logical_value, 65, "n_758";
+		logical_value, 66, "n_762";
+		logical_value, 67, "n_766";
+		logical_value, 68, "n_770";
+		logical_value, 69, "n_774";
+		logical_value, 70, "n_778";
+		logical_value, 71, "n_783";
+		logical_value, 72, "n_787";
+		logical_value, 73, "n_791";
+		logical_value, 74, "n_796";
+		logical_value, 75, "n_800";
+		logical_value, 76, "n_804";
+		logical_value, 77, "n_809";
+		logical_value, 78, "n_814";
+		logical_value, 79, "n_818";
+		logical_value, 80, "n_823";
+		logical_value, 81, "n_828";
+		logical_value, 82, "n_832";
+		logical_value, 83, "n_837";
+		logical_value, 84, "n_842";
+		logical_value, 85, "n_847";
+		logical_value, 86, "n_852";
+		logical_value, 87, "n_857";
+		logical_value, 88, "n_862";
+		logical_value, 89, "n_867";
+		logical_value, 90, "n_873";
+		logical_value, 91, "n_878";
+		logical_value, 92, "n_883";
+		logical_value, 93, "n_889";
+		logical_value, 94, "n_894";
+		logical_value, 95, "n_900";
+		logical_value, 96, "n_906";
+		logical_value, 97, "n_911";
+		logical_value, 98, "n_917";
+		logical_value, 99, "n_923";
+		logical_value, 100, "n_929";
+		logical_value, 101, "n_935";
+		logical_value, 102, "n_941";
+		logical_value, 103, "n_947";
+		logical_value, 104, "n_954";
+		logical_value, 105, "n_960";
+		logical_value, 106, "n_966";
+		logical_value, 107, "n_973";
+		logical_value, 108, "n_980";
+		logical_value, 109, "n_986";
+		logical_value, 110, "n_993";
+		logical_value, 111, "n_1000";
+		logical_value, 112, "n_1007";
+		logical_value, 113, "n_1014";
+		logical_value, 114, "n_1021";
+		logical_value, 115, "n_1029";
+		logical_value, 116, "n_1036";
+		logical_value, 117, "n_1043";
+		logical_value, 118, "n_1051";
+		logical_value, 119, "n_1059";
+		logical_value, 120, "n_1067";
+		logical_value, 121, "n_1075";
+		logical_value, 122, "n_1083";
+		logical_value, 123, "n_1091";
+		logical_value, 124, "n_1099";
+		logical_value, 125, "n_1108";
+		logical_value, 126, "n_1116";
+		logical_value, 127, "n_1125";
+		logical_value, 128, "n_1134";
+		logical_value, 129, "n_1143";
+		logical_value, 130, "n_1152";
+		logical_value, 131, "n_1161";
+		logical_value, 132, "n_1171";
+		logical_value, 133, "n_1180";
+		logical_value, 134, "n_1190";
+		logical_value, 135, "n_1200";
+		logical_value, 136, "n_1210";
+		logical_value, 137, "n_1220";
+		logical_value, 138, "n_1231";
+		logical_value, 139, "n_1241";
+		logical_value, 140, "n_1252";
+		logical_value, 141, "n_1263";
+		logical_value, 142, "n_1274";
+		logical_value, 143, "n_1286";
+		logical_value, 144, "n_1297";
+		logical_value, 145, "n_1309";
+		logical_value, 146, "n_1321";
+		logical_value, 147, "n_1333";
+		logical_value, 148, "n_1346";
+		logical_value, 149, "n_1358";
+		logical_value, 150, "n_1371";
+		logical_value, 151, "n_1385";
+		logical_value, 152, "n_1398";
+		logical_value, 153, "n_1412";
+		logical_value, 154, "n_1426";
+		logical_value, 155, "n_1440";
+		logical_value, 156, "n_1455";
+		logical_value, 157, "n_1469";
+		logical_value, 158, "n_1485";
+		logical_value, 159, "n_1500";
+		logical_value, 160, "n_1516";
+		logical_value, 161, "n_1532";
+		logical_value, 162, "n_1548";
+		logical_value, 163, "n_1565";
+		logical_value, 164, "n_1582";
+		logical_value, 165, "n_1600";
+		logical_value, 166, "n_1618";
+		logical_value, 167, "n_1636";
+		logical_value, 168, "n_1655";
+		logical_value, 169, "n_1674";
+		logical_value, 170, "n_1694";
+		logical_value, 171, "n_1714";
+		logical_value, 172, "n_1735";
+		logical_value, 173, "n_1756";
+		logical_value, 174, "n_1778";
+		logical_value, 175, "n_1800";
+		logical_value, 176, "n_1823";
+		logical_value, 177, "n_1846";
+		logical_value, 178, "n_1870";
+		logical_value, 179, "n_1895";
+		logical_value, 180, "n_1920";
+		logical_value, 181, "n_1946";
+		logical_value, 182, "n_1973";
+		logical_value, 183, "n_2000";
+		logical_value, 184, "n_2028";
+		logical_value, 185, "n_2057";
+		logical_value, 186, "n_2087";
+		logical_value, 187, "n_2118";
+		logical_value, 188, "n_2149";
+		logical_value, 189, "n_2182";
+		logical_value, 190, "n_2215";
+		logical_value, 191, "n_2250";
+		logical_value, 192, "n_2286";
+		logical_value, 193, "n_2323";
+		logical_value, 194, "n_2361";
+		logical_value, 195, "n_2400";
+		logical_value, 196, "n_2441";
+		logical_value, 197, "n_2483";
+		logical_value, 198, "n_2526";
+		logical_value, 199, "n_2571";
+		logical_value, 200, "n_2618";
+		logical_value, 201, "n_2667";
+		logical_value, 202, "n_2717";
+		logical_value, 203, "n_2769";
+		logical_value, 204, "n_2824";
+		logical_value, 205, "n_2880";
+		logical_value, 206, "n_2939";
+		logical_value, 207, "n_3000";
+		logical_value, 208, "n_3064";
+		logical_value, 209, "n_3130";
+		logical_value, 210, "n_3200";
+		logical_value, 211, "n_3273";
+		logical_value, 212, "n_3349";
+		logical_value, 213, "n_3429";
+		logical_value, 214, "n_3512";
+		logical_value, 215, "n_3600";
+		logical_value, 216, "n_3692";
+		logical_value, 217, "n_3789";
+		logical_value, 218, "n_3892";
+		logical_value, 219, "n_4000";
+		logical_value, 220, "n_4114";
+		logical_value, 221, "n_4235";
+		logical_value, 222, "n_4364";
+		logical_value, 223, "n_4500";
+		logical_value, 224, "n_4645";
+		logical_value, 225, "n_4800";
+		logical_value, 226, "n_4966";
+		logical_value, 227, "n_5143";
+		logical_value, 228, "n_5333";
+		logical_value, 229, "n_5538";
+		logical_value, 230, "n_5760";
+		logical_value, 231, "n_6000";
+		logical_value, 232, "n_6261";
+		logical_value, 233, "n_6545";
+		logical_value, 234, "n_6857";
+		logical_value, 235, "n_7200";
+		logical_value, 236, "n_7579";
+		logical_value, 237, "n_8000";
+		logical_value, 238, "n_8471";
+		logical_value, 239, "n_9000";
+		logical_value, 240, "n_9600";
+		logical_value, 241, "n_10286";
+		logical_value, 242, "n_11077";
+		logical_value, 243, "n_12000";
+		logical_value, 244, "n_13091";
+		logical_value, 245, "n_14400";
+		logical_value, 246, "n_16000";
+		logical_value, 247, "n_18000";
+		logical_value, 248, "n_20571";
+		logical_value, 255, "SNA";
+	}
+	c08_t3_Cval_PNM {
+		physical_value, 0, 200, 0.1, 0, "s";
+		logical_value, 254, "ERR";
+		logical_value, 255, "SNA";
+	}
+	c08_temp_lgen {
+		logical_value, 0, "T_blw_m38";
+		logical_value, 1, "T_btw_m38_m34";
+		logical_value, 2, "T_btw_m34_m30";
+		logical_value, 3, "T_btw_m30_m26";
+		logical_value, 4, "T_btw_m26_m22";
+		logical_value, 5, "T_btw_m22_m18";
+		logical_value, 6, "T_btw_m18_m14";
+		logical_value, 7, "T_btw_m14_m10";
+		logical_value, 8, "T_btw_m10_m6";
+		logical_value, 9, "T_btw_m6_m2";
+		logical_value, 10, "T_btw_m2_2";
+		logical_value, 11, "T_btw_2_6";
+		logical_value, 12, "T_btw_6_10";
+		logical_value, 13, "T_btw_10_14";
+		logical_value, 14, "T_btw_14_18";
+		logical_value, 15, "T_btw_18_22";
+		logical_value, 16, "T_btw_22_26";
+		logical_value, 17, "T_btw_26_30";
+		logical_value, 18, "T_btw_30_34";
+		logical_value, 19, "T_btw_34_38";
+		logical_value, 20, "T_btw_38_42";
+		logical_value, 21, "T_btw_42_46";
+		logical_value, 22, "T_btw_46_50";
+		logical_value, 23, "T_btw_50_54";
+		logical_value, 24, "T_btw_54_58";
+		logical_value, 25, "T_btw_58_62";
+		logical_value, 26, "T_btw_62_66";
+		logical_value, 27, "T_btw_66_70";
+		logical_value, 28, "T_btw_70_74";
+		logical_value, 29, "T_btw_74_78";
+		logical_value, 30, "T_btw_78_82";
+		logical_value, 31, "T_btw_82_86";
+		logical_value, 32, "T_btw_86_90";
+		logical_value, 33, "T_btw_90_94";
+		logical_value, 34, "T_btw_94_98";
+		logical_value, 35, "T_btw_98_102";
+		logical_value, 36, "T_btw_102_106";
+		logical_value, 37, "T_btw_106_110";
+		logical_value, 38, "T_btw_110_114";
+		logical_value, 39, "T_btw_114_118";
+		logical_value, 40, "T_btw_118_122";
+		logical_value, 41, "T_btw_122_126";
+		logical_value, 42, "T_btw_126_130";
+		logical_value, 43, "T_btw_130_134";
+		logical_value, 44, "T_btw_134_138";
+		logical_value, 45, "T_btw_138_142";
+		logical_value, 46, "T_btw_142_146";
+		logical_value, 47, "T_btw_146_150";
+		logical_value, 48, "T_btw_150_154";
+		logical_value, 49, "T_btw_154_158";
+		logical_value, 50, "T_btw_158_162";
+		logical_value, 51, "T_btw_162_166";
+		logical_value, 52, "T_abv_166";
+		logical_value, 255, "SNA";
+	}
+	c10_V_8_to_18_0k01 {
+		physical_value, 0, 1000, 0.01, 8, "V_PC";
+		logical_value, 1022, "ERR";
+		logical_value, 1023, "SNA";
+	}
+	c10_V_8_to_36_0k1 {
+		physical_value, 0, 280, 0.1, 8, "V";
+		logical_value, 1023, "SNA";
+	}
+	c10_V_8_to_36_0k1_ERR_SNA {
+		physical_value, 0, 280, 0.1, 8, "V";
+		logical_value, 1015, "CALIB_ERR";
+		logical_value, 1016, "VOLT_8UFLW";
+		logical_value, 1017, "VOLT_32OFLW";
+		logical_value, 1018, "SM_ERR";
+		logical_value, 1019, "CH_ERR";
+		logical_value, 1020, "VREF_ERR";
+		logical_value, 1021, "VOLT_UFLW";
+		logical_value, 1022, "VOLT_OFLW";
+		logical_value, 1023, "SNA";
+	}
+	c10_V_8_to_36_0k1_ERR_SNA_1 {
+		physical_value, 0, 280, 0.1, 8, "V";
+		logical_value, 1022, "ERR";
+		logical_value, 1023, "SNA";
+	}
+	c10_mOhm_0_1000_0k01 {
+		physical_value, 0, 1000, 0.01, 0, "mOhm";
+		logical_value, 1022, "ERR";
+		logical_value, 1023, "SNA";
+	}
+	c12_percent_0_to_40930_10 {
+		physical_value, 0, 4093, 10, 0, "%";
+		logical_value, 4094, "ERR";
+		logical_value, 4095, "SNA";
+	}
+	c16_A_m2000_to_0_0k05 {
+		physical_value, 0, 40000, 0.05, -2000, "A";
+		logical_value, 65535, "SNA";
+	}
+	c16_V_0_to_64k255_0k001 {
+		physical_value, 0, 64255, 0.001, 0, "V";
+		logical_value, 65535, "SNA";
+	}
+	c16_degCel_m273_to_1735_0k03125 {
+		physical_value, 0, 64255, 0.03125, -273, "°C";
+		logical_value, 65535, "SNA";
+	}
+	c16_kmh_0_to_250k996_0k00390625 {
+		physical_value, 0, 64255, 0.00390625, 0, "km/h";
+		logical_value, 65535, "SNA";
+	}
+	c24_A_m1500_to_p200_0k001_ERR {
+		physical_value, 0, 1700000, 0.001, -1500, "A";
+		logical_value, 16777214, "ERR";
+		logical_value, 16777215, "SNA";
+	}
+	cv08_CRC_woSNA {
+		physical_value, 0, 255, 1, 0, "NoUnit";
+	}
+}
+
+
+Signal_representation {
+	c01_Conn_NotConn : LGEN0_PinS1Conn_Stat, LGEN0_PinSConn_Stat, LGEN1_Flag_PinS1_Conn, LGEN1_Flag_PinS_Conn, LGEN2_Flag_PinS1_Conn, LGEN2_Flag_PinS_Conn, LGEN3_Flag_PinS1_Conn, LGEN3_Flag_PinS_Conn;
+	c01_Diag_Tx_Rq : DIAG_TX_REQUEST_IBS;
+	c01_False_True : BatDpDischrgRestPhase_Stat_IBS, ExtBatChrgDtct_Stat_IBS, FullChrgDet_Cval_IBS, IncIntResOrVoltDrop_Stat_IBS, LGEN0_SenseDiff_Stat, LGEN1_Flag_SenseDiff, LGEN2_Flag_SenseDiff, LGEN3_Flag_SenseDiff, MeasSig2_Stat_IBS, MeasSig3_Stat_IBS;
+	c01_NotActv_Actv : LGEN0_HTCutoff_Stat, LGEN0_Mech_Stat, LGEN1_Flag_HT, LGEN1_Flag_ROT, LGEN2_Flag_HT, LGEN2_Flag_ROT, LGEN3_Flag_HT, LGEN3_Flag_ROT, LGEN_OperateInParallelmode;
+	c01_Ok_Err : LGEN0_ElectricalFault_Stat, LGEN0_TimeOutErr_Stat, LGEN1_ERR_ElectricalFault, LGEN1_ERR_Timeout, LGEN2_ERR_ElectricalFault, LGEN2_ERR_Timeout, LGEN3_ERR_ElectricalFault, LGEN3_ERR_Timeout, RsErr_Stat_IBS, RsErr_Stat_LGEN0, RsErr_Stat_LGEN1, RsErr_Stat_LGEN2, RsErr_Stat_LGEN3, RsErr_Stat_RLCM, RsErr_Stat_RLCM_E2E;
+	c01_RegDeExcitation : LGEN0_DeExcitation_Stat, LGEN1_Flag_DeExcitation, LGEN2_Flag_DeExcitation, LGEN3_Flag_DeExcitation;
+	c01_RegParaOp : LGEN0_ParallelMode_Stat, LGEN1_Flag_ParallelMode, LGEN2_Flag_ParallelMode, LGEN3_Flag_ParallelMode;
+	c02_LIN_Slave_WUP : Wupd_Stat_IBS, Wupd_Stat_RLCM, Wupd_Stat_RLCM_E2E;
+	c02_NACT_ACT_ERR_SNA : EQWrk_Stat, RedcMinBatSftyOffset_Stat, RedcMinBatSftyOffst_Stat_IBS3, VltRppl_Rq_IBS;
+	c02_NoErr_Err_SNA : EqulbrErr_Stat_E2E;
+	c02_NoError_Error : EepErr_Stat_IBS, EepErr_Stat_IBS3, EqulbrErr_Stat, EqulbrErr_Stat_IBS, HW_Err_Stat_IBS, HW_Err_Stat_IBS3, IBSErr_Stat, ShntDiscntErr_Stat, WireInvErr_Stat;
+	c02_NoFlt_Flt_Err : BatPlDscnFl_Stat_E2E;
+	c02_NotActv_low_high_sna : WprSpd_Rq, WprSpd_Rq_E2E;
+	c02_NotFail_Fail_Res : LgtSens_Stat, LgtSens_Stat_E2E, RainSens_Stat, RainSens_Stat_E2E;
+	c02_OK_CurrUflw_CurrOflw_SNA : BatCurr_Stat_IBS;
+	c02_OK_TempUflw_TempOflw_SNA : BatTemp_Stat_IBS;
+	c02_OK_VoltUflw_VoltOflw_SNA : BatVolt12_Stat_IBS, BatVolt24_Stat_IBS;
+	c02_Off_On_Err : Ign_Stat;
+	c02_Off_On_Res : LgtSensNightMd_Stat, LgtSensNightMd_Stat_E2E, LoBm_Rq, LoBm_Rq_E2E;
+	c02_PkPosn : WprPkSw_Stat;
+	c02_Request : WndShldWash_Stat, WprAuto_Rq;
+	c02_Splash_Stat : Splash_Rq, Splash_Rq_E2E;
+	c02_ok_Low_res_sna : RainSensLowVolt_Stat, RainSensLowVolt_Stat_E2E;
+	c03_DataSelection_LINGenerator : LGEN0_TxData_Stat, LGEN1_TxData_Selected, LGEN2_TxData_Selected, LGEN3_TxData_Selected, LGEN_TxData_Selection;
+	c03_IBS_BatModel_Stat : BatConfidenceIndex_Stat, SOH_CnfdncIndex_Stat_IBS;
+	c04_0_to_15_1_SNA_na : SQC_SG_IBS_Frm5_AR2, SQC_SG_RLCM_E2E_Frm1;
+	c04_Abschaltdrehzahl_LR_LINGen : LGEN_CutOffSpeed_LRMode;
+	c04_BatTechnology_ERR_SNA : BatType_Stat, BatType_Stat_IBS3;
+	c04_RampTime_LR_LINGen_sna_na : LGEN_RampTime_LRMode;
+	c04_Steps_1_5_sna : RainSensSenstvty_Stat;
+	c04_Steps_1_7_sna : TwlgtLvl_Stat, TwlgtLvl_Stat_E2E;
+	c04_Type_1_15 : WndShldType_Stat;
+	c04_VehModel_1_15 : VehModle_Stat;
+	c04_Wrn24V_UnFlw_Cval_PNM : Wrn24V_UnFlw_Cval_PNM, Wrn24V_UnFlw_Cval_PNM_IBS3;
+	c04_WrnI_OvFlw_Cval : WrnI_OvFlw_Cval_PNM_IBS3;
+	c04_WrnOvFlw_PNM : WrnI_OvFlw_Cval_PNM;
+	c04_WrnQ_OvFlw_Cval_PNM : WrnQ_OvFlw_Cval_PNM, WrnQ_OvFlw_Cval_PNM_IBS3;
+	c04_t2_Cval_PNM : t2_Cval_PNM;
+	c05_0_to_30_1 : BatRplcmntCntr_Cval_IBS, BatRstCntr_Cval_IBS;
+	c05_WorkLoad_LINGenerator : LGEN0_Workload_Cval, LGEN1_Workload, LGEN2_Workload, LGEN3_Workload;
+	c05_t1_Cval_PNM : t1_Cval_PNM;
+	c06_I0_Cval_PNM : I0_Cval_PNM;
+	c07_AvgQscntCurrRestPhase_Cval : AvgQscntCurrRestPhase_Cval_IBS;
+	c07_I2_Cval_PNM : I2_Cval_PNM;
+	c07_I3_Cval_PNM : I3_Cval_PNM;
+	c07_Max_InductionCurrent_LINGEN : LGEN_MaxInductionCurrent;
+	c07_NomVolt_LINGenerator : LGEN_NominalVoltage;
+	c07_T_Cval_PNM : T_Cval_PNM;
+	c08_0_to_254_1_SNA_VLD : LGEN1_Selected_Data_CVal, LGEN2_Selected_Data_CVal, LGEN3_Selected_Data_CVal;
+	c08_0_to_255_1 : CcksmIBSSfPrm_Cval_E2E;
+	c08_A_0_500_2_Err_SNA : NomCapDetBat_Cval, NomCapDetBat_Cval_IBS3;
+	c08_ActualVoltage_LINGenerator : LGEN0_TxData_NULL;
+	c08_Ah_0_500_2_Ext : MinBatCpctyCRANK_Cval_IBS, MinBatCpctyCRANK_Cval_IBS3;
+	c08_Ah_0_to_500_2 : AhChrgCycle_Cval_IBS, AhDischrgCycle_Cval_IBS, BatCpctyFull_Cval, BatCpctyRest_Cval, CapLossTop_Cval_IBS;
+	c08_Ah_0_to_500_2_ERR : BatSOFHVReq_Cval;
+	c08_I1_Cval_PNM : I1_Cval_PNM;
+	c08_NomVal_InductCurr_LGen : LGEN0_IndCurr_Cval, LGEN1_ActualVal_InductionCurrent, LGEN2_ActualVal_InductionCurrent, LGEN3_ActualVal_InductionCurrent;
+	c08_V_14d9_36d9_0d1_RES : LGEN0_TxData_Umeas_Cval;
+	c08_V_22_31_0d05_RES : LGEN0_TxData_Uset_Cval;
+	c08_V_4_to_18_0k1 : BatVolt12_Cval_IBS;
+	c08_V_4_to_18_0k1_ERR_SNA : BatVolt12_Cval_E2E;
+	c08_degreeCelsius_m40_to_p125_1 : BatTemp_Cval, NTC_BatTermTemp_Cval;
+	c08_h_0_to_12216_24 : TmInSrv_Cval;
+	c08_mOhm_0_to_253_0k1 : Ri_Crank_Cval, Ri_Impdnc_Cval;
+	c08_mOhm_0_to_254_0k1 : Ri_Crank_Cval_IBS3;
+	c08_percent_0_to_100_1 : BatSOH_Cval, SOC_LoTlrnc_Cval_IBS, SOC_UpTlrnc_Cval_IBS;
+	c08_rpm_LGEN : LGEN0_TxData_ShaftSpd_Cval;
+	c08_t3_Cval_PNM : t3_Cval_PNM;
+	c08_temp_lgen : LGEN0_TxData_IC_Temp_Cval;
+	c10_V_8_to_18_0k01 : BatMaxU0_Cval, BatMaxU0_Cval_IBS3, BatMinU0_Cval, BatMinU0_Cval_IBS3;
+	c10_V_8_to_36_0k1 : BatVolt24_Cval_IBS;
+	c10_V_8_to_36_0k1_ERR_SNA : BatVolt24_Cval_E2E;
+	c10_V_8_to_36_0k1_ERR_SNA_1 : BatSOFeStrExtLig_Cval_E2E;
+	c10_mOhm_0_1000_0k01 : NomIntResistDetBat_Cval, NomIntResistDetBat_Cval_IBS3;
+	c12_percent_0_to_40930_10 : NmbrOfCycls_Cval;
+	c16_A_m2000_to_0_0k05 : IBattMinLastCrank_Cval, IBattMinLastCrank_Cval_IBS3;
+	c16_V_0_to_64k255_0k001 : UBatt24HighRes_Cval, UBattMinLastCrank_Cval, UBattMinLastCrank_Cval_IBS3;
+	c16_degCel_m273_to_1735_0k03125 : AirTempOutsd_Cval_SCA;
+	c16_kmh_0_to_250k996_0k00390625 : VehSpd_Cval_CPC;
+	c24_A_m1500_to_p200_0k001_ERR : BatCurr_Cval;
+	cv08_CRC_woSNA : CRC_SG_IBS_Frm5_AR2, CRC_SG_RLCM_E2E_Frm1;
+}
+
+
+/* 
+**************************************************************************
+* End-to-End Protections
+**************************************************************************
+* Signal_groups {
+* 	Signal_group_name {
+* 		Signal_name;
+* 		Signal_name;
+* 		:
+* 	}
+* 	Signal_group_name {
+* 		:
+* 	}
+* }
+* End_to_end_profiles {
+* 	Profile_name:Profile_category,Data_length,Crc_offset,Counter_offset {
+* 		Data_ids
+* 	}
+* 	Profile_name:Profile_category,Data_length,Crc_offset,Counter_offset {
+* 		:
+* 	}
+* }
+* End_to_end_protections {
+* 	Signal_group_name:Frame_name,Data_offset,Profile_name;
+* 	Signal_group_name:Frame_name,Data_offset,Profile_name;
+* 	:
+* }
+**************************************************************************
+Signal_groups {
+	SG_IBS_Frm5_AR2 {
+		BatPlDscnFl_Stat_E2E;
+		BatSOFeStrExtLig_Cval_E2E;
+		BatVolt12_Cval_E2E;
+		BatVolt24_Cval_E2E;
+		CcksmIBSSfPrm_Cval_E2E;
+		CRC_SG_IBS_Frm5_AR2;
+		EqulbrErr_Stat_E2E;
+		NmbrOfCycls_Cval;
+		SQC_SG_IBS_Frm5_AR2;
+	}
+	SG_RLCM_E2E_Frm1 {
+		CRC_SG_RLCM_E2E_Frm1;
+		LgtSens_Stat_E2E;
+		LgtSensNightMd_Stat_E2E;
+		LoBm_Rq_E2E;
+		RainSens_Stat_E2E;
+		RainSensLowVolt_Stat_E2E;
+		RsErr_Stat_RLCM_E2E;
+		Splash_Rq_E2E;
+		SQC_SG_RLCM_E2E_Frm1;
+		TwlgtLvl_Stat_E2E;
+		WprSpd_Rq_E2E;
+		Wupd_Stat_RLCM_E2E;
+	}
+}
+End_to_end_profiles {
+	XDIS_8B067CEB96B23404AABA8B8A5A990E5A:PROFILE_02,64,0,8 {
+		33,243,202,161,120,79,38,248,207,166,125,84,43,253,212,171
+	}
+	XDIS_1603DA309A0D3C078300C450F91A82C0:PROFILE_02,40,0,8 {
+		208,161,114,67,20,224,177,130,83,36,240,193,146,99,52,5
+	}
+}
+End_to_end_protections {
+	SG_IBS_Frm5_AR2:IBS_Frm5_AR2,0,XDIS_8B067CEB96B23404AABA8B8A5A990E5A;
+	SG_RLCM_E2E_Frm1:RLCM_AR2_Frm1,0,XDIS_1603DA309A0D3C078300C450F91A82C0;
+}
+**************************************************************************
+ */
+
