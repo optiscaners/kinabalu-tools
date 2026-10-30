@@ -17,6 +17,22 @@ can_send_trc -c <config.json> -P
 | `-P`, `--list-profiles` | List the profiles from the config file and exit |
 | `-h`, `--help` | Show help |
 
+Supported bitrates are defined in the timing table in `k6u/can/can_send_trc.py`
+(CAN 2.0: 500k, 666.666k; CAN FD: 500k/1M, 500k/5M).
+
+### Examples
+
+```sh
+can_send_trc -c examples/cansendtrc_config.json <profile> [profile ...]
+can_send_trc -c examples/cansendtrc_config.json -P        # list profiles
+can_send_trc -c examples/cansendtrc_config.json -i a      # interactive, frame by frame
+can_send_trc -c examples/cansendtrc_config.json -r 10 all # repeat 10 times
+```
+
+Config file (see [examples/cansendtrc_config.json](examples/cansendtrc_config.json)):
+
+
+
 ## Config file
 
 Example: [examples/cansendtrc_config.json](../examples/cansendtrc_config.json)

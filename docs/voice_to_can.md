@@ -11,6 +11,13 @@ voice_to_can [file.wav]
 Without an argument the bundled test signal `k6u/data/chirp_200Hz_800Hz_10s_a08.wav`
 (chirp 200–800 Hz, 10 s) is used.
 
+
+## Examples
+
+```sh
+voice_to_can [file.wav]   # default: bundled 200–800 Hz chirp
+```
+
 ## Wave file requirements
 
 Each CAN frame carries 4 audio frames and a classic CAN frame holds at most 8 bytes, so

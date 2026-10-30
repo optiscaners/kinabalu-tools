@@ -14,6 +14,13 @@ box_status [-C <configfile>]
 | `-C <configfile>` | YAML config file (default: `box_status.yml` in the current directory) |
 | `-h` | Show help |
 
+## Examples
+
+```sh
+box_status                                  # uses ./box_status.yml
+box_status -C examples/box_status.yml
+```
+
 ## Config file
 
 See [examples/box_status.yml](../examples/box_status.yml).
