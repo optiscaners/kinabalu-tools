@@ -1,0 +1,25 @@
+# Config für box_status
+# Abonniert wird je Box: <topic>/<box>/Status/Connection  (Inhalt "Online" / "Offline")
+
+server:
+  host: broker.myestino.de
+  port: 1884
+  # username: user
+  # password: secret
+  # keepalive: 60
+
+boxes:
+  # Box-Nummern in Anführungszeichen, damit YAML sie als Text liest
+  - topic: FwTest
+    box: "990000002001"
+    name: Testbox 1
+  - topic: FwTest
+    box: "990000002002"
+    name: Testbox 2
+  # Box-Nummern in Anführungszeichen, damit YAML sie als Text liest
+  - topic: Daimler
+    box: "000000003003"
+    name: Fzg 983V69
+  - topic: Daimler
+    box: "000000003004"
+    name: Fzg 983V65

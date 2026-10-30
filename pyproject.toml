@@ -11,12 +11,16 @@ requires-python = ">=3.12"
 
 dependencies = [
     "python-can>=4.0",
+    "paho-mqtt>=2.0",
+    "PyYAML>=6.0",
+    "windows-curses>=2.3; sys_platform == 'win32'",
 ]
 
 [project.scripts]
 voice_to_can = "k6u.can.voice_to_can:main"
 can_send_trc = "k6u.can.can_send_trc:main"
 firmware_duplicates = "k6u.tools.firmware_duplicates:main"
+box_status = "k6u.tools.box_status:main"
 
 [dependency-groups]
 dev = [
