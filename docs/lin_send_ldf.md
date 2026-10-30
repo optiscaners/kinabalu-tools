@@ -26,7 +26,7 @@ lin_send_ldf -l <ldf_file> -D
 python lin_send_ldf.py -l examples/THERMO_LIN2_2026_07a.ldf -r 10
 ```
 
-This command sends all frames defined 
+This command sends all frames defined `THERMO_LIN2_2026_07a.ldf` 10 times.
 
 ## Which frames are sent
 
