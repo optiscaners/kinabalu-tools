@@ -12,6 +12,19 @@ uv pip install -e .
 uv sync --group dev
 ```
 
+Install directly from git (without a local clone):
+
+```sh
+# into the current environment
+uv pip install git+https://github.com/optiscaners/kinabalu-tools.git
+# a specific branch, tag or commit
+uv pip install git+https://github.com/optiscaners/kinabalu-tools.git@main
+# as isolated command line tools (commands available on PATH)
+uv tool install git+https://github.com/optiscaners/kinabalu-tools.git
+# or with plain pip
+pip install git+https://github.com/optiscaners/kinabalu-tools.git
+```
+
 Requires Python >= 3.12. 
 
 The CAN tools use a PEAK PCAN-USB adapter (`PCAN_USBBUS1`/`PCAN_USBBUS2`).
