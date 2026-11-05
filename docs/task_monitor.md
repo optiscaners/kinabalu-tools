@@ -9,14 +9,14 @@ the text output has the same format.
 ## Usage
 
 ```sh
-task_monitor [-s <srcdir>]... [-c] [-o <outfile>] <file>
+task_monitor [-s <srcdir>]... [-v] [-o <outfile>] <file>
 ```
 
 | Option | Meaning |
 |---|---|
 | `<file>` | Input file, the type is detected by its first bytes (see below) |
 | `-s <srcdir>` | Firmware source directory scanned for log id names (repeatable) |
-| `-c` | Compact: show only the used log id slots (default: all slots, as the C# viewer) |
+| `-v` | Verbose: show all log id slots, as the C# viewer (default: empty slots `0x00000000` are suppressed, also in text dumps) |
 | `-o <outfile>` | Write the result to a file instead of stdout |
 | `-h` | Show help |
 
@@ -53,9 +53,9 @@ Output (shortened):
   Log Data:
    Stack Depth: 2
    Log Id List:
-    Id 0: True, True, 0x03, 0x02, 0x03, 0x01  -> FirmwareMqtt/RemoteConnection/ProcessMqttStepPart/ProcessMqttStepEnterAction
-    Id 1: True, True, 0x03, 0x02, 0x03, 0x02  -> FirmwareMqtt/RemoteConnection/ProcessMqttStepPart/ProcessMqttStepProcessMessagesAction
-    Id 2: False, True, 0x03, 0x02, 0x01, 0x0A  -> FirmwareMqtt/RemoteConnection/DefaultPart/RunBeginTransmitAction
+*** Id 0: True, True, 0x03, 0x02, 0x03, 0x01  -> FirmwareMqtt/RemoteConnection/ProcessMqttStepPart/ProcessMqttStepEnterAction
+*** Id 1: True, True, 0x03, 0x02, 0x03, 0x02  -> FirmwareMqtt/RemoteConnection/ProcessMqttStepPart/ProcessMqttStepProcessMessagesAction
++++ Id 2: False, True, 0x03, 0x02, 0x01, 0x0A  -> FirmwareMqtt/RemoteConnection/DefaultPart/RunBeginTransmitAction
 ```
 
 ## Data format
@@ -91,6 +91,7 @@ A log id line reads `active, specific, library, module, part, action`:
 | action | 7..0 | `OPTISCAN_SYSTEM_LOG_DECL_ACTION` |
 
 The active entries from index 0 up to `Stack Depth - 1` show where the task was when the dump was taken.
+They are marked with `*** ` in red, popped entries (`False, True`) with `+++ ` in yellow (colors only when writing to a terminal, not with `-o`).
 
 ## Name resolution (`-s`)
 

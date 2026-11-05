@@ -3,7 +3,7 @@ task_monitor.py - Decodes task monitor data (watchdog state and log id call stac
 
 Usage:
 
-    task_monitor [-s <srcdir>]... [-c] [-o <outfile>] [-h] <file>
+    task_monitor [-s <srcdir>]... [-v] [-o <outfile>] [-h] <file>
 
     <file>          - task monitor data, detected by its first bytes:
                       0xFA 0xCE: data (Ram_TaskMonitor.bin or flash read "TaskMonitor" of the ServiceTool)
@@ -11,18 +11,21 @@ Usage:
                       otherwise: text dump ("Task List: ...")
     -s <srcdir>     - firmware source directory scanned for log id names; may be given
                       several times (e.g. Common, Firmware and the project directory)
-    -c              - compact: show only used log id slots (default: all slots)
+    -v              - verbose: show all log id slots (default: empty slots are suppressed)
     -o <outfile>    - write result to file instead of stdout
     -h              - show help and exit
 
 Binary input is decoded into the text format of the C# TaskMonitorDataViewer. A text dump is
-passed through and annotated. With -s, every log id is resolved to
+passed through and annotated. Log ids on the call stack ("Id <n>: True, True") are prefixed
+with "*** " and shown in red on a terminal, popped ones ("Id <n>: False, True") with "+++ "
+in yellow. With -s, every log id is resolved to
 "<library>/<module>/<part>/<action>" using the MODULE(), OPTISCAN_SYSTEM_LOG_DECL_PART()
 and OPTISCAN_SYSTEM_LOG_DECL_ACTION() declarations found in the sources.
 """
 
 # == modules ==
 import getopt
+import os
 import re
 import struct
 import sys
@@ -67,6 +70,12 @@ RE_MODULE_DEF = re.compile(
 RE_MODULE = re.compile(r"^\s*MODULE\(\s*(\w+)\s*,\s*" + NUM + r"\s*\)")
 RE_PART = re.compile(r"OPTISCAN_SYSTEM_LOG_DECL_PART\(\s*([\w:]+)\s*,\s*(\w+)\s*,\s*" + NUM + r"\s*\)")
 RE_ACTION = re.compile(r"OPTISCAN_SYSTEM_LOG_DECL_ACTION\(\s*([\w:]+)\s*,\s*(\w+)\s*,\s*" + NUM + r"\s*\)")
+# log id line markers: (pattern, prefix, color)
+RESET = "\033[0m"
+MARKERS = (
+    (re.compile(r"^(\s*)(Id \d+: True, True\b.*)$"), "*** ", "\033[31m"),  # active: red
+    (re.compile(r"^(\s*)(Id \d+: False, True\b.*)$"), "+++ ", "\033[33m"),  # popped: yellow
+)
 RE_TEXT_ID = re.compile(
     r"^(\s*Id \d+: (True|False), (True|False), 0x([0-9A-Fa-f]{2}), 0x([0-9A-Fa-f]{2}), "
     r"0x([0-9A-Fa-f]{2}), 0x([0-9A-Fa-f]{2}))\s*$"
@@ -244,7 +253,7 @@ def unwrap_flash_format(data):
     return data[FLASH_HEADER_SIZE : FLASH_HEADER_SIZE + data_size]
 
 
-def decode_binary(data, names, compact):
+def decode_binary(data, names, verbose):
     if len(data) < HEADER_SIZE + 4:
         raise ValueError(f"file too short ({len(data)} bytes)")
     magic0, magic1, major, minor, task_count, wd_size, log_size = struct.unpack_from(HEADER_FORMAT, data, 0)
@@ -302,25 +311,40 @@ def decode_binary(data, names, compact):
             else:
                 out.append(f"   Stack Depth: {depth}")
             out.append("   Log Id List:")
-            if compact:
-                used = max((i + 1 for i, v in enumerate(ids) if v), default=0)
-                count = min(capacity, max(depth, used))
-            else:
-                count = capacity
-            for i in range(count):
-                out.append(format_log_id(i, split_log_id(ids[i]), names))
+            for i in range(capacity):
+                if verbose or ids[i]:
+                    out.append(format_log_id(i, split_log_id(ids[i]), names))
     return out
 
 
-def annotate_text(text, names):
+def annotate_text(text, names, verbose):
     out = []
     for line in text.splitlines():
         m = RE_TEXT_ID.match(line)
+        if m and not verbose and m.group(2) == "False" and m.group(3) == "False":
+            if not any(int(m.group(i), 16) for i in range(4, 8)):
+                continue
         if m and names is not None:
             specific = m.group(3) == "True"
             fields = [int(m.group(i), 16) for i in range(4, 8)]
             if specific or any(fields):
                 line = f"{m.group(1)}  -> {names.describe(int(specific), *fields)}"
+        out.append(line)
+    return out
+
+
+# prefixes the log ids matching MARKERS (in place of the indent) and optionally colors them
+def mark_ids(lines, color):
+    out = []
+    for line in lines:
+        for pattern, prefix, code in MARKERS:
+            m = pattern.match(line)
+            if m:
+                indent = m.group(1)
+                line = indent[: max(0, len(indent) - len(prefix))] + prefix + m.group(2)
+                if color:
+                    line = f"{code}{line}{RESET}"
+                break
         out.append(line)
     return out
 
@@ -335,11 +359,11 @@ def barf_and_exit(retcode, diag=None):
 # == main ==
 def main():
     src_dirs = []
-    compact = False
+    verbose = False
     out_file = None
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "s:o:ch")
+        opts, args = getopt.getopt(sys.argv[1:], "s:o:vh")
     except getopt.GetoptError as e:
         barf_and_exit(-1, f"Error: {e}")
 
@@ -348,8 +372,8 @@ def main():
             src_dirs.append(Path(v))
         elif o == "-o":
             out_file = Path(v)
-        elif o == "-c":
-            compact = True
+        elif o == "-v":
+            verbose = True
         elif o == "-h":
             barf_and_exit(0)
 
@@ -372,19 +396,22 @@ def main():
 
     try:
         if data[:2] == bytes(MAGIC):
-            lines = decode_binary(data, names, compact)
+            lines = decode_binary(data, names, verbose)
         elif data[:2] == FLASH_MAGIC:
-            lines = decode_binary(unwrap_flash_format(data), names, compact)
+            lines = decode_binary(unwrap_flash_format(data), names, verbose)
         else:
             text = data.decode("utf-8", errors="replace")
             if "Task List:" not in text:
                 raise ValueError("neither a binary task monitor dump nor a text dump")
-            lines = annotate_text(text, names)
+            lines = annotate_text(text, names, verbose)
     except ValueError as e:
         print(f"Error: {in_file}: {e}", file=sys.stderr)
         sys.exit(1)
 
-    result = "\n".join(lines) + "\n"
+    color = out_file is None and sys.stdout.isatty()
+    if color and sys.platform == "win32":
+        os.system("")  # enables the ANSI escape sequences in the Windows console
+    result = "\n".join(mark_ids(lines, color)) + "\n"
     if out_file:
         out_file.write_text(result, encoding="utf-8")
     else:
