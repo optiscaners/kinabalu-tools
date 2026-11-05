@@ -17,6 +17,12 @@ firmware_duplicates -r <refdir> -b <basedir> [-o <reportfile>]
 | `-v` | Reserved for a more verbose report (not implemented yet) |
 | `-h` | Show help |
 
+## Examples
+
+```sh
+firmware_duplicates -r <refdir> -b <basedir> [-o report.md]
+```
+
 ## How it works
 
 1. All `.c`, `.cpp`, `.h`, `.hpp` files below `refdir` become reference candidates.

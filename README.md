@@ -44,6 +44,13 @@ full-screen, htop-like terminal view.
 
 [... read more ...](docs/box_status.md)
 
+### `task_monitor`
+
+Decodes a task monitor dump (RAM or flash read of the ServiceTool) into the watchdog state and
+log id call stack of every task; log ids can be resolved to names from the firmware sources.
+
+[... read more ...](docs/task_monitor.md)
+
 
 ### `lin_send_ldf`
 

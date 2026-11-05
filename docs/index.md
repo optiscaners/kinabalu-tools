@@ -7,5 +7,6 @@
 | [lin_send_ldf](lin_send_ldf.md) | Send LIN frames from an LDF file on PEAK PLIN hardware |
 | [firmware_duplicates](firmware_duplicates.md) | Report copied/modified source files across a firmware tree |
 | [box_status](box_status.md) | Monitor the MQTT online status of boxes (htop-like view) |
+| [task_monitor](task_monitor.md) | Decode task monitor dumps (watchdog state, log id call stack) |
 
 See also [development.md](development.md) for setup, linting and project layout.

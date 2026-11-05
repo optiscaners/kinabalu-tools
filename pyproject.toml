@@ -23,6 +23,7 @@ can_send_trc = "k6u.can.can_send_trc:main"
 lin_send_ldf = "k6u.lin.lin_send_ldf:main"
 firmware_duplicates = "k6u.tools.firmware_duplicates:main"
 box_status = "k6u.tools.box_status:main"
+task_monitor = "k6u.tools.task_monitor:main"
 
 [dependency-groups]
 dev = [
