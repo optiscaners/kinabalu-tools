@@ -45,7 +45,7 @@ Output (shortened):
 
 ```text
  Task 0:
-  Identity: Core0, Task, 513
+  Identity: Core0, Task, 513 (Gsm, id 2, prio 1)
   Watchdog Data:
    Has Timeout: True
    Is Serviced: False
@@ -75,7 +75,8 @@ The flash format prepends the 8 byte `DataFlashFileHeader`: magic `TM`, `uint16`
 `uint32` unused (must be 0). Bytes after the data (erased flash) are ignored.
 
 - **Identity**: bits 31..24 category (Main, Task, Isr2, Isr1), 23..16 core, 15..0 sub id
-  (for tasks `(id << 8) | priority`).
+  (for tasks `(id << 8) | priority`). With `-s`, the task name is taken from the
+  `TASK_DEF_TASK/ISR1/ISR2/MAIN()` entries of `Task.def.h` (so include the project directory).
 - **Watchdog data**: has timeout, is enabled, is serviced, is test enabled, timeout [ms].
 - **Log data**: stack depth and `CFG_TASK_LOG_CAPACITY` log ids; the capacity is taken from the header.
 

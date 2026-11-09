@@ -20,7 +20,8 @@ passed through and annotated. Log ids on the call stack ("Id <n>: True, True") a
 with "*** " and shown in red on a terminal, popped ones ("Id <n>: False, True") with "+++ "
 in yellow. With -s, every log id is resolved to
 "<library>/<module>/<part>/<action>" using the MODULE(), OPTISCAN_SYSTEM_LOG_DECL_PART()
-and OPTISCAN_SYSTEM_LOG_DECL_ACTION() declarations found in the sources.
+and OPTISCAN_SYSTEM_LOG_DECL_ACTION() declarations found in the sources, and every task
+identity gets its name from the TASK_DEF_*() entries of the project's Task.def.h.
 """
 
 # == modules ==
@@ -70,6 +71,21 @@ RE_MODULE_DEF = re.compile(
 RE_MODULE = re.compile(r"^\s*MODULE\(\s*(\w+)\s*,\s*" + NUM + r"\s*\)")
 RE_PART = re.compile(r"OPTISCAN_SYSTEM_LOG_DECL_PART\(\s*([\w:]+)\s*,\s*(\w+)\s*,\s*" + NUM + r"\s*\)")
 RE_ACTION = re.compile(r"OPTISCAN_SYSTEM_LOG_DECL_ACTION\(\s*([\w:]+)\s*,\s*(\w+)\s*,\s*" + NUM + r"\s*\)")
+# task names from Task.def.h: TASK_DEF_TASK(core, id, prio, name), TASK_DEF_ISR1/2(core, prio, name),
+# TASK_DEF_MAIN(core, name)
+TASK_DEF_FILE = "task.def.h"
+RE_TASK_DEF = re.compile(r"^\s*TASK_DEF_(TASK|ISR1|ISR2|MAIN)\(\s*((?:" + NUM + r"\s*,\s*){1,3})(\w+)\s*\)")
+TASK_CATEGORY_IDS = {"MAIN": 1, "TASK": 2, "ISR2": 3, "ISR1": 4}
+# category names in text dumps (firmware and C# viewer naming) -> category
+TEXT_CATEGORIES = {"None": 0, "Main": 1, "Idle": 1, "Task": 2, "Isr2": 3, "Isr1": 4}
+# modules whose part/action bytes carry diagnostic data: module name -> formatter(part, action)
+DATA_MODULES = {
+    "CompressIteration": lambda part, action: (
+        f"iteration={(part << 8) | action}" + (" (saturated)" if (part, action) == (0xFF, 0xFF) else "")
+    ),
+    "CompressRemaining": lambda part, action: f"input={part}/255 output={action}/255",
+}
+RE_TEXT_IDENTITY = re.compile(r"^(\s*Identity: Core(\d+), (\w+), (\d+))\s*$")
 # log id line markers: (pattern, prefix, color)
 RESET = "\033[0m"
 MARKERS = (
@@ -91,6 +107,7 @@ class LogNames:
         self.modules = {}  # (specific, lib, module) -> set of names
         self.parts = {}  # (specific, lib, module, part) -> set of names
         self.actions = {}  # (specific, lib, module, part, action) -> set of names
+        self.tasks = {}  # (category, core, sub id) -> set of task names
 
     @staticmethod
     def _add(table, key, name):
@@ -149,6 +166,29 @@ class LogNames:
                     for key in parents:
                         self._add(self.actions, (*key, action), m.group(2))
 
+        # 5) task names (sub id of a task is (id << 8) | prio)
+        for f, lines in files:
+            if f.name.lower() != TASK_DEF_FILE:
+                continue
+            for line in lines:
+                if m := RE_TASK_DEF.match(line):
+                    kind = m.group(1)
+                    args = [int(a, 0) for a in re.findall(NUM, m.group(2))]
+                    expected = {"TASK": 3, "MAIN": 1}.get(kind, 2)
+                    if len(args) != expected:
+                        continue
+                    if kind == "TASK":
+                        core, sub_id = args[0], (args[1] << 8) | args[2]
+                    elif kind == "MAIN":
+                        core, sub_id = args[0], 0
+                    else:
+                        core, sub_id = args
+                    self._add(self.tasks, (TASK_CATEGORY_IDS[kind], core, sub_id), m.group(4))
+
+    def task_name(self, category, core, sub_id):
+        names = self.tasks.get((category, core, sub_id))
+        return "|".join(sorted(names)) if names else None
+
     def describe(self, specific, lib, module, part, action):
         def name(table, key, value):
             names = table.get(key)
@@ -158,6 +198,10 @@ class LogNames:
             name(self.libs, (specific, lib), lib),
             name(self.modules, (specific, lib, module), module),
         ]
+        # diagnostic data modules: part/action carry values instead of names
+        decoder = DATA_MODULES.get(result[1])
+        if decoder is not None:
+            return "/".join(result) + " " + decoder(part, action)
         if part != 0 or (specific, lib, module, 0) in self.parts:
             result.append(name(self.parts, (specific, lib, module, part), part))
         result.append(name(self.actions, (specific, lib, module, part, action), action))
@@ -222,11 +266,23 @@ def split_log_id(log_id):
     )
 
 
-def format_identity(identity):
+def format_identity(identity, names):
     category = (identity >> 24) & 0xFF
     core = (identity >> 16) & 0xFF
     sub_id = identity & 0xFFFF
-    return f"Core{core}, {CATEGORIES.get(category, f'0x{category:02X}')}, {sub_id}"
+    return f"Core{core}, {CATEGORIES.get(category, f'0x{category:02X}')}, {sub_id}" + describe_task(
+        category, core, sub_id, names
+    )
+
+
+# " (<name>)" suffix of an identity, empty without sources or unknown task
+def describe_task(category, core, sub_id, names):
+    name = names.task_name(category, core, sub_id) if names is not None else None
+    if name is None:
+        return ""
+    if category == 2:
+        return f" ({name}, id {sub_id >> 8}, prio {sub_id & 0xFF})"
+    return f" ({name})"
 
 
 def format_log_id(index, fields, names):
@@ -289,7 +345,7 @@ def decode_binary(data, names, verbose):
         (identity,) = struct.unpack_from("<I", data, offset)
         offset += 4
         out.append(f" Task {task}:")
-        out.append(f"  Identity: {format_identity(identity)}")
+        out.append(f"  Identity: {format_identity(identity, names)}")
         if wd_size:
             has_timeout, is_enabled, is_serviced, is_test, timeout_ms = struct.unpack_from(
                 WATCHDOG_FORMAT, data, offset
@@ -320,6 +376,12 @@ def decode_binary(data, names, verbose):
 def annotate_text(text, names, verbose):
     out = []
     for line in text.splitlines():
+        if names is not None and (m := RE_TEXT_IDENTITY.match(line)):
+            category = TEXT_CATEGORIES.get(m.group(3))
+            if category is not None:
+                line = m.group(1) + describe_task(category, int(m.group(2)), int(m.group(4)), names)
+            out.append(line)
+            continue
         m = RE_TEXT_ID.match(line)
         if m and not verbose and m.group(2) == "False" and m.group(3) == "False":
             if not any(int(m.group(i), 16) for i in range(4, 8)):
