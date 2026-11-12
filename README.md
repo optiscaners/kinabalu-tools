@@ -43,6 +43,13 @@ Sends a wave file as a sequence of CAN frames (4 samples per frame, mono 16-bit 
 
 [... read more ...](docs/voice_to_can.md)
 
+### `raspi_can_relais`
+
+Switches a relay board on a Raspberry Pi via GPIO: 24 CAN line relays (`CAN1` … `CAN24`) and
+the supply terminals `KL15`/`KL30`; intended for interactive use (`python -i -m k6u.can.raspi_can_relais`).
+
+[... read more ...](docs/raspi_can_relais.md)
+
 ### `firmware_duplicates`
 
 Finds copies of reference source files (`.c`, `.cpp`, `.h`, `.hpp`) in a directory tree
