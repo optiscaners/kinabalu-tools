@@ -24,10 +24,13 @@ import getopt
 import json
 import logging
 import os
+import random
 import sys
 import time
 import traceback
 from pathlib import Path
+
+from .can_bus_setup import start_bus, stop_bus
 
 logging.getLogger()
 
@@ -36,63 +39,26 @@ DEFAULT_CONFIG_FILE = "examples/cansendtrc_config.json"
 DEFAULT_TRC_FILE_PATH = "."
 
 class CanTrcTx:
-    def __init__(self):
+    def __init__(self, pcan_channels=("PCAN_USBBUS1", "PCAN_USBBUS2")):
         self.bus1 = None
         self.bus2 = None
+        self.pcan_channels = pcan_channels
         self.is_remote_frame = False
-        self.timing_table = {
-                (int(500e3), int(5e6)) : dict(f_clock=80000000,nom_brp=1,nom_tseg1=127,nom_tseg2=32,nom_sjw=32,data_brp=1,data_tseg1=11,data_tseg2=4,data_sjw=4),
-                (int(500e3), int(1e6)) : dict(f_clock=40000000,nom_brp=1,nom_tseg1=63,nom_tseg2=16,nom_sjw=16,data_brp=4,data_tseg1=7,data_tseg2=2,data_sjw=2),
-                # This one was derived from "can.BitTiming.from_sample_point(f_clock=8000000, bitrate=666666, sample_point=69.0)"
-                (int(666666))          : dict(f_clock=8000000, brp=1, tseg1=7, tseg2=4, sjw=4, nof_samples=1),                
-                (int(500e3))           : dict(f_clock=80000000, brp=10, tseg1=13, tseg2=2, sjw=1)
-
-            }
         self.total_send_count = 1
         self.current_frame_count = 0
 
     def start_busses(self, nominalBitrate, dataBitrate=None):
-        if dataBitrate:
-            print("configure canFD")
-            fd_identifier = (int(nominalBitrate), int(dataBitrate))
-            timing_param = self.timing_table.get(fd_identifier,{})
-            is_fd = True
-            print (f"FD: {fd_identifier} - {timing_param}")
-            
-            #self.bus1 = can.interface.Bus(interface="pcan", channel="PCAN_USBBUS1", bitrate=nominalBitrate, data_bitrate=dataBitrate, **timing_param)
-            #self.bus2 = can.interface.Bus(interface="pcan", channel="PCAN_USBBUS2", bitrate=nominalBitrate, data_bitrate=dataBitrate, **timing_param)
-            self.bus1 = can.interface.Bus(interface="pcan", channel="PCAN_USBBUS1",  **timing_param)
-            self.bus2 = can.interface.Bus(interface="pcan", channel="PCAN_USBBUS2",  **timing_param)
-        else:
-            print("configure can2.0")
-            std_identifier = int(nominalBitrate)
-            timing_param = self.timing_table.get(std_identifier,{})
-            print (f"CAN2: {std_identifier} - {timing_param}")
-
-            is_fd = False
-            self.bus1 = can.interface.Bus(interface="pcan", channel="PCAN_USBBUS1", receive_own_messages = False,  **timing_param)
-            self.bus2 = can.interface.Bus(interface="pcan", channel="PCAN_USBBUS2", receive_own_messages = False,  **timing_param)
-            
-            print (f"{std_identifier} - {timing_param}")
-
-        print(self)
+        """bus1 sends; on Windows bus2 is opened on the second PCAN channel (e.g. to ACK frames).
+        On Linux only one bus is used (presume-ack on)."""
+        self.bus1 = start_bus(nominalBitrate, dataBitrate, pcan_channel=self.pcan_channels[0])
+        if sys.platform == "win32" and len(self.pcan_channels) > 1:
+            self.bus2 = start_bus(nominalBitrate, dataBitrate, pcan_channel=self.pcan_channels[1])
 
     def stop_busses(self):
-        if self.bus1:
-            self.bus1.shutdown()
+        stop_bus(self.bus1)
+        stop_bus(self.bus2)
         self.bus1 = None
-        if self.bus2:
-            self.bus2.shutdown()
         self.bus2 = None
-
-
-    def __str__(self):
-        try:
-            rv = f"{self.bus1.channel_info}: {self.bus1.state} {self.bus1.protocol} {self.bus1.bitrate} {self.bus1.data_bitrate}, "\
-                 f"{self.bus2.channel_info}: {self.bus2.state} {self.bus2.protocol} {self.bus2.bitrate} {self.bus2.data_bitrate}"
-        except Exception as e:
-            rv = f"ERROR: {e}"
-        return rv
 
     def read_trc_file(self, fn):
         mlist  = list(can.TRCReader(fn))    
@@ -114,6 +80,7 @@ class CanTrcTx:
                 else:
                     delay = msg.timestamp - last_ts
                     last_ts = msg.timestamp
+                    delay = 0
                     if delay > 0:
                         time.sleep(delay)
                     else: 
@@ -130,7 +97,7 @@ class CanTrcTx:
                             interactive_count = 0
                     print(f"\nTotal {self.total_send_count: 8d}  Frame[{i}]: {msg}")
                 else:
-                    print(f"Total {self.total_send_count: 8d} Frame[{i}] len={len(msg.data)}\r", end="")                            
+                    print(f"Total {self.total_send_count: 8d} Frame[{i}] len={len(msg.data)}\r", end="")
                 self.bus1.send(msg, timeout=delay)
                 self.total_send_count += 1
                 self.current_frame_count = i
@@ -141,6 +108,35 @@ class CanTrcTx:
         print(f"real duration: {t1 - t0}s")
         print(f"first: {m_first}")
         print(f"last: {m_last}")
+
+    def replay_random_messages(self, iterations = 100, len = 64, interactive = False):
+        msg = can.Message(is_extended_id=True, is_rx=False, is_remote_frame=self.is_remote_frame, channel=1)
+        msg.dlc = len
+        voicepacket_id = 0
+        t0 = time.time()            
+        tx_err = 0
+
+        is_fd = bus.protocol in (can.CanProtocol.CAN_FD, can.CanProtocol.CAN_FD_NON_ISO)
+        if is_fd: 
+            len = 64
+        else:
+            len = 8
+        for i in range(iterations):
+            msg.arbitration_id = 0x01 #voicepacket_id+i
+            #msg.arbitration_id = random.randrange(1,0xffffff)
+            msg.data = random.randbytes(len)            
+            time.sleep(0.1)
+            try:
+                self.bus1.send(msg)
+            except Exception as e :
+                tx_err += 1
+                print(f"TxErr: {tx_err} {e}")
+                time.sleep(0.1)
+            if i % 25 == 0:
+                print(f".", end="")
+                #print(f"frames: {i}\r", end="")
+        t1 = time.time()            
+        print(f"real duration: {t1 - t0}s")
 
 def load_config_json(fn):
     rv = {}
@@ -241,7 +237,8 @@ def main():
                         print(f"Load {trcfn}")
                         messages = cantrx.read_trc_file(trcfn)
                         print(f"==>: {hw} {bus_id} {os.path.basename(trcfn)}: {len(messages)}")
-                        cantrx.replay_messages(messages=messages, interactive=cfg["interactive"])
+                        #cantrx.replay_messages(messages=messages, interactive=cfg["interactive"])
+                        cantrx.replay_random_messages(iterations = 10000, len = 64, interactive=cfg["interactive"])
                     except Exception as e:
                         print(f"ERROR: {e} rpt: {rpt} {bus} trc: {trcfn} frm_idx: {cantrx.current_frame_count} total:{cantrx.total_send_count}")
                         traceback.print_exc()

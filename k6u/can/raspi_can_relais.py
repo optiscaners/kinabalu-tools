@@ -35,13 +35,32 @@ def relais_factory():
     return can_relais
 
 
+def hw29_kl15_kl30_on():
+    REL.KL30.on()
+    REL.KL15.on()
+
+def hw29_500k5M_on():
+    set_can_relais("500k5M", ["Can2", "Can9", "Can13", "Can14", "Can15", "Can16", "Can17", "Can18", "Can19"])
+
+def hw29_500k_on():
+    set_can_relais("500k", ["Can3", "Can5", "Can6", "Can8", "Can10", "Can11", "Can12", "Can20"])
+
+def set_can_relais(diag, can_list):
+    print(f"Enable {diag} {can_list}")
+    for can in can_list:
+        print(f"  - Enable {can}")
+        REL[can.upper()].on()
+
 REL = None
 
 def main():
-    global REL
-    print("hello", __file__)
-    
+    global REL    
     REL = relais_factory()
+    hw29_kl15_kl30_on()
+    hw29_500k5M_on()
+    hw29_500k_on()
+
+
 
 
 if __name__ == "__main__":
