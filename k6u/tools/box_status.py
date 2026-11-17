@@ -10,6 +10,8 @@ Usage:
 
 Für jede Box wird das Topic "<topic>/<box>/Status/Connection" abonniert,
 Inhalt ist "Online" oder "Offline".
+Zusätzlich wird "<topic>/<box>/Status/Connection/<date-string>" abonniert,
+aus dem JSON-Payload werden "Id" und "SmuResetCounter" angezeigt.
 
 Config file (YAML):
 
@@ -28,6 +30,7 @@ Tasten: q = beenden, s = Sortierung wechseln, c = Liste leeren (Status zurückse
 # == modules ==
 import curses
 import getopt
+import json
 import sys
 import threading
 import time
@@ -55,10 +58,24 @@ class Box:
         self.status = None  # None = no message received yet
         self.since = None  # time of last status change
         self.last_msg = None  # time of last message
+        self.dev_id = None  # "Id" from connection info message
+        self.smu_resets = None  # "SmuResetCounter" from connection info message
 
     @property
     def mqtt_topic(self):
         return f"{self.topic}/{self.box}/{STATUS_SUFFIX}"
+
+    @property
+    def info_topic(self):
+        # <topic>/<box>/Status/Connection/<date-string>
+        return f"{self.mqtt_topic}/+"
+
+    def update_info(self, info):
+        print(info)
+        if "Id" in info:
+            self.dev_id = str(info["Id"])
+        if "SmuResetCounter" in info:
+            self.smu_resets = info["SmuResetCounter"]
 
     def update(self, payload):
         now = time.time()
@@ -71,6 +88,8 @@ class Box:
         self.status = None
         self.since = None
         self.last_msg = None
+        self.dev_id = None
+        self.smu_resets = None
 
 
 # MQTT connection and status table
@@ -108,7 +127,13 @@ class BoxMonitor:
             self.connected = True
             self.conn_info = "connected"
         # (re)subscribe after every connect, retained messages deliver the current state
-        client.subscribe([(t, 0) for t in self.by_topic])
+        topics = [t for b in self.boxes for t in (b.mqtt_topic, b.info_topic)]
+
+        client.subscribe([(t, 0) for t in topics])
+        for t in topics:
+            print(t)
+
+
 
     def on_disconnect(self, client, userdata, flags, reason_code, properties):
         with self.lock:
@@ -116,12 +141,26 @@ class BoxMonitor:
             self.conn_info = f"disconnected: {reason_code}, reconnecting ..."
 
     def on_message(self, client, userdata, msg):
+        # utf-8-sig: devices send JSON payloads with a UTF-8 BOM
+        payload = msg.payload.decode("utf-8-sig", errors="replace").strip()
+        if payload.lower() in ("", "null", "(null)"):
+            return  # empty / null payload: keep current display
         box = self.by_topic.get(msg.topic)
+        if box is not None:
+            with self.lock:
+                box.update(payload)
+            return
+        # <topic>/<box>/Status/Connection/<date-string> with JSON payload
+        box = self.by_topic.get(msg.topic.rsplit("/", 1)[0])
         if box is None:
             return
-        payload = msg.payload.decode("utf-8", errors="replace").strip()
-        with self.lock:
-            box.update(payload)
+        try:
+            info = json.loads(payload)
+        except ValueError:
+            return
+        if isinstance(info, dict):
+            with self.lock:
+                box.update_info(info)
 
     def reset(self):
         with self.lock:
@@ -205,7 +244,8 @@ def draw(win, monitor, sort_mode, scroll):
 
     with monitor.lock:
         boxes = sorted_boxes(monitor.boxes, sort_mode)
-        rows = [(b.topic, b.box, b.name, b.status, b.since, b.last_msg) for b in boxes]
+        rows = [(b.topic, b.box, b.name, b.status, b.since, b.last_msg,
+                 b.dev_id or "-", "-" if b.smu_resets is None else str(b.smu_resets)) for b in boxes]
         connected = monitor.connected
         conn_info = monitor.conn_info
 
@@ -232,18 +272,21 @@ def draw(win, monitor, sort_mode, scroll):
     w_topic = max([5] + [len(r[0]) for r in rows])
     w_box = max([3] + [len(r[1]) for r in rows])
     w_name = max([4] + [len(r[2]) for r in rows])
-    hdr = f" {'TOPIC':<{w_topic}}  {'BOX':<{w_box}}  {'NAME':<{w_name}}  {'STATUS':<8}  {'SINCE':>8}  {'LAST MSG':>8}"
+    w_id = max([2] + [len(r[6]) for r in rows])
+    hdr = (f" {'TOPIC':<{w_topic}}  {'BOX':<{w_box}}  {'NAME':<{w_name}}  {'STATUS':<8}  {'SINCE':>8}  {'LAST MSG':>8}"
+           f"  {'ID':<{w_id}}  {'SMU RST':>7}")
     put(win, 5, 0, hdr.ljust(w), curses.color_pair(4))
 
     body_top = 6
     body_h = max(0, h - body_top - 1)
     scroll = max(0, min(scroll, len(rows) - body_h))
-    for i, (topic, box, name, status, since, last_msg) in enumerate(rows[scroll:scroll + body_h]):
+    for i, (topic, box, name, status, since, last_msg, dev_id, smu_resets) in enumerate(rows[scroll:scroll + body_h]):
         y = body_top + i
         put(win, y, 0, f" {topic:<{w_topic}}  {box:<{w_box}}  {name:<{w_name}}  ")
         x = 1 + w_topic + 2 + w_box + 2 + w_name + 2
         put(win, y, x, f"{status or '?':<8}", status_attr(status))
-        put(win, y, x + 8, f"  {fmt_age(since, now):>8}  {fmt_age(last_msg, now):>8}")
+        put(win, y, x + 8, f"  {fmt_age(since, now):>8}  {fmt_age(last_msg, now):>8}"
+                           f"  {dev_id:<{w_id}}  {smu_resets:>7}")
 
     footer = " q:Quit  s:Sort  c:Clear  Up/Down/PgUp/PgDn:Scroll"
     if len(rows) > body_h:
