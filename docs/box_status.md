@@ -36,11 +36,27 @@ boxes:
     name: Testbox 1        # optional
 ```
 
-For each box the topic `<topic>/<box>/Status/Connection` is subscribed; the payload is
-`Online` or `Offline`. This is the same as
+For each box two topics are subscribed:
+
+| Topic | Payload |
+|---|---|
+| `<topic>/<box>/Status/Connection` | `Online` or `Offline` |
+| `<topic>/<box>/Status/Connection/<date-string>` | JSON connection info, sent by the box when it connects |
+
+Example connection info message:
+
+```text
+topic:   Daimler/000000003004/Status/Connection/2026-11-17T11:06:55Z
+payload: {"Id":"Pegasus20Gen2","Version":"0.1.4","StartTime":"2026-11-17T11:06:20Z",
+          "SmuResetCounter":0, ...}
+```
+
+From this payload `Id`, `Version` and `SmuResetCounter` are shown; other fields are ignored.
+This is the same as
 
 ```sh
-mosquitto_sub -h broker.myestino.de -p 1884 -t "FwTest/990000002001/Status/Connection"
+mosquitto_sub -h broker.myestino.de -p 1884 -t "FwTest/990000002001/Status/Connection" \
+              -t "FwTest/990000002001/Status/Connection/+"
 ```
 
 Quote box numbers so YAML reads them as text (leading zeros are kept).
@@ -51,7 +67,10 @@ Quote box numbers so YAML reads them as text (leading zeros are kept).
 |---|---|
 | STATUS | `Online` (green), `Offline` (red), `?` = no message received yet |
 | SINCE | Time since the last status change |
-| LAST MSG | Time since the last message for this box |
+| LAST MSG | Time since the last status message for this box |
+| ID | `Id` from the connection info message (`-` = none received yet) |
+| VERS | Firmware `Version` from the connection info message |
+| SMU RST | `SmuResetCounter` from the connection info message |
 
 The header shows the broker connection state and counts of online/offline/unknown boxes.
 The client reconnects automatically and re-subscribes after a reconnect.
@@ -60,11 +79,16 @@ The client reconnects automatically and re-subscribes after a reconnect.
 |---|---|
 | `q` / `Esc` | Quit |
 | `s` | Cycle sort order: config order → status (offline first) → topic/box |
-| `c` | Clear all states (wait for new messages) |
+| `c` | Clear all states incl. ID/VERS/SMU RST (wait for new messages) |
 | Up/Down, PgUp/PgDn, Home | Scroll |
 
 ## Notes
 
 - If the status topics are published as *retained*, the current state appears immediately
   after start; otherwise boxes stay `?` until their next status message.
+- The connection info message is not retained: ID, VERS and SMU RST stay `-` until a box
+  (re)connects to the broker while `box_status` is running.
+- Messages with an empty payload, `null` or `(null)` are ignored, the display keeps the
+  last value.
+- A UTF-8 BOM at the start of a payload (as sent by the boxes) is removed before parsing.
 - On Windows `windows-curses` is required (installed automatically as a dependency).
