@@ -30,7 +30,7 @@ import time
 import traceback
 from pathlib import Path
 
-from .can_bus_setup import start_bus, stop_bus
+from k6u.can import can_bus_setup
 
 logging.getLogger()
 
@@ -47,16 +47,16 @@ class CanTrcTx:
         self.total_send_count = 1
         self.current_frame_count = 0
 
-    def start_busses(self, nominalBitrate, dataBitrate=None):
+    def start_busses(self, nominalBitrate, dataBitrate=None, tx_self_ack=True):
         """bus1 sends; on Windows bus2 is opened on the second PCAN channel (e.g. to ACK frames).
         On Linux only one bus is used (presume-ack on)."""
-        self.bus1 = start_bus(nominalBitrate, dataBitrate, pcan_channel=self.pcan_channels[0])
+        self.bus1 = can_bus_setup.start_bus(self.pcan_channels[0], nominalBitrate, dataBitrate, tx_self_ack)
         if sys.platform == "win32" and len(self.pcan_channels) > 1:
-            self.bus2 = start_bus(nominalBitrate, dataBitrate, pcan_channel=self.pcan_channels[1])
+            self.bus2 = can_bus_setup.start_bus(self.pcan_channels[1], nominalBitrate, dataBitrate)
 
     def stop_busses(self):
-        stop_bus(self.bus1)
-        stop_bus(self.bus2)
+        can_bus_setup.stop_bus(self.bus1)
+        can_bus_setup.stop_bus(self.bus2)
         self.bus1 = None
         self.bus2 = None
 
@@ -116,7 +116,7 @@ class CanTrcTx:
         t0 = time.time()            
         tx_err = 0
 
-        is_fd = bus.protocol in (can.CanProtocol.CAN_FD, can.CanProtocol.CAN_FD_NON_ISO)
+        is_fd = self.bus1.protocol in (can.CanProtocol.CAN_FD, can.CanProtocol.CAN_FD_NON_ISO)
         if is_fd: 
             len = 64
         else:
@@ -172,10 +172,11 @@ def parse_args():
         "selected_busses": "all",
         "trc_file_path": DEFAULT_TRC_FILE_PATH,
         "trc_file": None,
-        "rpt_cnt" : 1
+        "rpt_cnt" : 1,
+        "replay_randmsg": 0
     }
     print(f"sys.argv: {sys.argv}")
-    opts, args = getopt.getopt(sys.argv[1:], "hc:iPr:", ["help", "config=", "interactive", "list-profiles", "rpt="])
+    opts, args = getopt.getopt(sys.argv[1:], "hc:iPr:", ["help", "config=", "interactive", "list-profiles", "rpt=", "replay_randmsg="])
     
     for o, v in opts:
         if o in ("-h", "--help"):
@@ -192,6 +193,8 @@ def parse_args():
                 print(f"Option {o} : {int(v)} - invalid value, skip option and keep old value {cfg['rpt_cnt']}")
             else:
                 cfg["rpt_cnt"] = int(v)
+        elif o in ("--replay_randmsg"):
+            cfg["replay_randmsg"] = True
             
     
     cfg["arguments"] = args
@@ -237,8 +240,10 @@ def main():
                         print(f"Load {trcfn}")
                         messages = cantrx.read_trc_file(trcfn)
                         print(f"==>: {hw} {bus_id} {os.path.basename(trcfn)}: {len(messages)}")
-                        #cantrx.replay_messages(messages=messages, interactive=cfg["interactive"])
-                        cantrx.replay_random_messages(iterations = 10000, len = 64, interactive=cfg["interactive"])
+                        if cfg["replay_randmsg"]:
+                            cantrx.replay_random_messages(iterations = 10000, len = 64, interactive=cfg["interactive"])
+                        else:
+                            cantrx.replay_messages(messages=messages, interactive=cfg["interactive"])
                     except Exception as e:
                         print(f"ERROR: {e} rpt: {rpt} {bus} trc: {trcfn} frm_idx: {cantrx.current_frame_count} total:{cantrx.total_send_count}")
                         traceback.print_exc()

@@ -2,7 +2,7 @@
 Open and close a single CAN bus on Linux (SocketCAN) or Windows (PCAN).
 
 Usage:
-    from can_bus_setup import start_bus, stop_bus
+    from k6u.can.can_bus_setup import start_bus, stop_bus
 
     bus = start_bus(500000, 5000000, pcan_channel="PCAN_USBBUS1")
     try:
@@ -42,7 +42,7 @@ def _run_ip_link(*args, check=True):
     """Run 'sudo ip link set <args>' and raise RuntimeError on failure (unless check=False)."""
     cmd = ["sudo", "ip", "link", "set", *args]
     try:
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=10)        
     except (OSError, subprocess.TimeoutExpired) as e:
         raise RuntimeError(f"command failed: {' '.join(cmd)}: {e}") from e
     if result.returncode != 0:
@@ -53,7 +53,7 @@ def _run_ip_link(*args, check=True):
     return result
 
 
-def _start_on_linux(channel, nominal_bitrate, data_bitrate=None, presume_ack="on"):
+def _start_on_linux(channel, nominal_bitrate, data_bitrate=None, tx_self_ack=False, txqueuelen=None):
     fd = bool(data_bitrate)
     print(f"LINUX configure {channel} {'canFD' if fd else 'canCLASSIC'}")
     link_args = ["type", "can", "bitrate", str(int(nominal_bitrate))]
@@ -61,15 +61,24 @@ def _start_on_linux(channel, nominal_bitrate, data_bitrate=None, presume_ack="on
         link_args += ["dbitrate", str(int(data_bitrate)), "fd", "on"]
     else:
         link_args += ["fd", "off"]
+    if tx_self_ack:
+        presume_ack = "on"
+    else:
+        presume_ack = "off"
+
     link_args += ["presume-ack", presume_ack]
 
     _run_ip_link(channel, "down")
     _run_ip_link(channel, *link_args)
+    if txqueuelen:
+        _run_ip_link(channel, "txqueuelen", str(int(txqueuelen)))
+    else:
+        pass
     _run_ip_link(channel, "up")
     return can.interface.Bus(interface="socketcan", channel=channel, fd=fd)
 
 
-def _start_on_windows(channel, nominal_bitrate, data_bitrate=None, receive_own_messages=False):
+def _start_on_windows(channel, nominal_bitrate, data_bitrate=None, tx_self_ack=False):
     if data_bitrate:
         key = (int(nominal_bitrate), int(data_bitrate))
         print(f"WIN32 configure {channel} canFD")
@@ -81,21 +90,23 @@ def _start_on_windows(channel, nominal_bitrate, data_bitrate=None, receive_own_m
         print(f"WARNING: no PCAN timing for {key}, using driver defaults")
     print(f"{key} - {timing_param}")
     return can.interface.Bus(interface="pcan", channel=channel,
-                             receive_own_messages=receive_own_messages, **timing_param)
+                             receive_own_messages=tx_self_ack, **timing_param)
 
 
-def start_bus(nominal_bitrate, data_bitrate=None, pcan_channel="PCAN_USBBUS1",
-              socketcan_channel="can0", presume_ack="on", receive_own_messages=False):
+def start_bus(channel, nominal_bitrate, data_bitrate=None, tx_self_ack=False,
+              txqueuelen=None):
     """Configure and open one CAN bus; CAN FD if data_bitrate is given.
 
-    pcan_channel is used on Windows, socketcan_channel on Linux.
+    channel is used on Windows and Linux, use "CAN<x>" for socket can on linux or PCAN_USBBUS<x> on windows.
+    receive_own_messages (Linux only) True if Tx-Self-Ack enabled
+    txqueuelen (Linux only) sets the interface transmit queue length (kernel default: 10).
     Returns the can.BusABC instance.
     """
     result = None
     if _is_linux():
-        result = _start_on_linux(socketcan_channel, nominal_bitrate, data_bitrate, presume_ack)
+        result = _start_on_linux(channel, nominal_bitrate, data_bitrate, tx_self_ack, txqueuelen)
     elif sys.platform == "win32":
-        result =  _start_on_windows(pcan_channel, nominal_bitrate, data_bitrate, receive_own_messages)
+        result =  _start_on_windows(channel, nominal_bitrate, data_bitrate, receive_own_messages)
     else: 
         raise RuntimeError(f"unsupported platform: {sys.platform}")
     return result

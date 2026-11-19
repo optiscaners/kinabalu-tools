@@ -7,6 +7,7 @@ import time
 import sys
 import wave
 from importlib.metadata import PackageNotFoundError, version
+from k6u.can import can_bus_setup
 
 try:
     VERSION = version("kinabalu-tools")
@@ -14,11 +15,13 @@ except PackageNotFoundError:
     VERSION = "unknown"
 
 class VoiceToCanSender:
-
-    def __init__(self):
+    def __init__(self, channel):
         self.is_remote_frame = False
         self.total_send_count = 0
-        self.bus = can.interface.Bus(interface="pcan", channel="PCAN_USBBUS1", fd=False, bitrate=1000000)
+        self.bus = can_bus_setup.start_bus( channel=channel,
+                                            nominal_bitrate = 1000000, 
+                                            data_bitrate=None,                                                                                        
+                                            tx_self_ack=False)
 
     def shutdown(self):
         self.bus.shutdown()
@@ -39,6 +42,12 @@ class VoiceToCanSender:
             mxframes = wf.getnframes()
             cnt = 0
             i = 0
+
+            msg.arbitration_id = 0x04600000
+            msg.dlc = 0
+            self.bus.send(msg)
+
+
             print(f"mxframes: {mxframes}")
             while ( cnt < mxframes ):
                 try:
@@ -77,7 +86,6 @@ class VoiceToCanSender:
 
 
 def parse_args():
-
     this_dir, _ = os.path.split(__file__)
     DEFAULT_WAVE_FILE = os.path.join(this_dir,"..", "data", "chirp_200Hz_800Hz_10s_a08.wav")
     cfg = {"wave" : DEFAULT_WAVE_FILE}
@@ -91,8 +99,15 @@ def main():
     cfg = parse_args()
     with wave.open(cfg.get("wave"), "rb") as wf:
         print(f"v{VERSION} frames={wf.getnframes()}, params={wf.getparams()}")
-
-        v2c = VoiceToCanSender()
+        # TODO: pass can channels via command line
+        if sys.platform.startswith("linux"):
+            channel = "can2"
+        elif sys.platform.startswith("win"):
+            channel="PCAN_USBBUS1"
+        else:
+            raise Exception(f"Unknown Host-OS: {sys.platform}")
+              
+        v2c = VoiceToCanSender(channel)
         try:
             v2c.send_voice_packets(wf)
         finally:
