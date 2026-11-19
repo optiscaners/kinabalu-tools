@@ -1,6 +1,7 @@
 import gpiozero
 from collections import UserDict
 import os
+import sys
 CANIOS = [ 4, 14, 15, 17, 18, 27, 22, 23, 24, 10, 9, 25, 11, 8, 7, 0, 1, 5, 6, 12, 13, 19, 16, 26]
 
 KL15 = 2
@@ -58,9 +59,9 @@ def set_can_relais(diag, can_list):
 def persist_pin_state():
     # os._exit ends the process without running gpiozero's shutdown handler, 
     # so the pins are never switched back to input. 
-    print("Persist pin state - use os._exit")
+    print("Persist pin state")
     os._exit(0)
-    persist_pin_state()
+
 
 REL = None
 
@@ -71,9 +72,14 @@ def main():
     hw29_500k5M_on()
     hw29_500k_on()
     #hw29_voicetocan()
-
+    if sys.flags.interactive:
+        # python runs with -i
+        pass
+    else:
+        # python runs as "programm"
+        persist_pin_state()
+    
 
 if __name__ == "__main__":
     main()
-    print("Use os._exit")
-    os._exit(0)
+    
