@@ -280,9 +280,9 @@ def draw(win, monitor, sort_mode, scroll):
     w_box = max([3] + [len(r[1]) for r in rows])
     w_name = max([4] + [len(r[2]) for r in rows])
     w_id = max([2] + [len(r[6]) for r in rows])    
-    w_version = 6
+    w_version = max([4] + [len(r[7]) for r in rows])
     hdr = (f" {'TOPIC':<{w_topic}}  {'BOX':<{w_box}}  {'NAME':<{w_name}}  {'STATUS':<8}  {'SINCE':>8}  {'LAST MSG':>8}"
-           f"  {'ID':<{w_id}}  {'VERS':<{w_version}} {'SMU RST':>7}")
+           f"  {'ID':<{w_id}}  {'VERS':<{w_version}}  {'SMU RST':>7}")
     put(win, 5, 0, hdr.ljust(w), curses.color_pair(4))
 
     body_top = 6
@@ -294,7 +294,7 @@ def draw(win, monitor, sort_mode, scroll):
         x = 1 + w_topic + 2 + w_box + 2 + w_name + 2
         put(win, y, x, f"{status or '?':<8}", status_attr(status))
         put(win, y, x + 8, f"  {fmt_age(since, now):>8}  {fmt_age(last_msg, now):>8}"
-                           f"  {dev_id:<{w_id}} {dev_version:<{w_version}}  {smu_resets:>7}")
+                           f"  {dev_id:<{w_id}}  {dev_version:<{w_version}}  {smu_resets:>7}")
 
     footer = " q:Quit  s:Sort  c:Clear  Up/Down/PgUp/PgDn:Scroll"
     if len(rows) > body_h:
