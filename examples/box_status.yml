@@ -1,5 +1,6 @@
 # Config für box_status
 # Abonniert wird je Box: <topic>/<box>/Status/Connection  (Inhalt "Online" / "Offline")
+#                   und: <topic>/<box>/Status/Connection/+ (JSON: Id, Version, SmuResetCounter)
 
 server:
   host: broker.myestino.de

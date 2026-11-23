@@ -60,7 +60,8 @@ and writes a Markdown report with the number of changed lines per copy.
 ### `box_status`
 
 Monitors the online status of boxes via MQTT (`<topic>/<box>/Status/Connection`) in a
-full-screen, htop-like terminal view.
+full-screen, htop-like terminal view. Also shows Id, firmware version and SMU reset counter
+from the connection info message (`<topic>/<box>/Status/Connection/<date-string>`).
 
 [... read more ...](docs/box_status.md)
 
