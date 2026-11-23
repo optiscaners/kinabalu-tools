@@ -2,7 +2,7 @@
 
 Lists every file of the Edge2 box file system (eMMC) with size and modification date via the
 serial port, followed by the cumulated size and file count per directory. Can also delete
-files selected by wildcard patterns.
+files selected by wildcard patterns, or download all files into a zip file.
 
 Uses the same OptiScan base64 protocol as the ServiceTool
 (`edge2/Desktop/ServiceToolGen2`).
@@ -12,17 +12,21 @@ Uses the same OptiScan base64 protocol as the ServiceTool
 ```sh
 analyze_emmc <port> [--ls] [-p <path>] [-o <csvfile>] [options]
 analyze_emmc <port> --rm <pattern>... [-r] [-y] [options]
+analyze_emmc <port> --get [-p <path>] [-x <pattern>]... [--block-size <n>] [options]
 ```
 
 | Option | Meaning |
 |---|---|
 | `<port>` | Serial port, e.g. `COM6` or `/dev/ttyUSB0` |
 | `--ls` | List all files with size (default command) |
-| `-p <path>` | `--ls`: start directory on the box (default: `/`) |
+| `-p <path>` | `--ls` / `--get`: start directory on the box (default: `/`) |
 | `-o <csvfile>` | `--ls`: additionally write the list as CSV (`path;type;size;modified`) |
 | `--rm <pattern>...` | Delete files matching one or more patterns (see below) |
 | `-r` | `--rm`: also delete matching directories with their content |
 | `-y` | `--rm`: do not ask for confirmation |
+| `--get` | Download all files (below `-p`) into `<BoxSerial>-<YYYYmmdd-HHMM>.zip` |
+| `-x <pattern>` | `--get`: exclude matching files / directories (repeatable, see below) |
+| `--block-size <n>` | `--get`: bytes per read request (default: baudrate / 20, at least 512, as the ServiceTool) |
 | `-b <baudrate>` | Baudrate (default: 115200) |
 | `-t <timeout>` | Response timeout in seconds (default: 20) |
 | `--keep-mode` | Stay in file system mode after the listing |
@@ -79,13 +83,40 @@ Patterns are matched per path segment (a `*` does not cross a `/`):
   first, then the sub directories (deepest first) and the directory itself.
 - A failed deletion is reported, the remaining entries are still deleted; exit code is 1.
 
+## Downloading files (`--get`)
+
+```sh
+analyze_emmc COM6 --get            # all files -> 000000003004-20261123-1436.zip
+analyze_emmc COM6 --get -p /LOG    # only files below /LOG
+analyze_emmc COM6 --get -x "*.bin" -x /LOG/OLD   # without .bin files and without /LOG/OLD
+```
+
+Exclude patterns (`-x`, repeatable) use the same wildcards as `--rm`:
+
+- A pattern without `/` matches the name in any directory: `-x "*.bin"`, `-x TMP`.
+- A pattern with `/` is matched from the root: `-x /LOG/OLD`, `-x "/LOG/*.bin"`.
+- A matching directory is excluded with its whole content and is not even listed.
+- The excluded entries are printed before the download starts.
+
+- The zip file is written to the current directory. `<BoxSerial>` is the 12 digit serial
+  number from the flash (`FlashRead` section `SerialNumber`, same as in the ServiceTool and
+  the MQTT topics), the time stamp is the local PC time at the start of the download.
+- Paths in the zip are the box paths without leading `/`; the modification date of the box
+  file is kept. Empty directories are stored as directory entries.
+- A file that cannot be read is reported and skipped, the other files are still downloaded;
+  exit code is 1.
+- On Ctrl-C the zip file is closed properly but is incomplete (marked in the output).
+- The transfer rate is limited by the baudrate: at 115200 baud roughly 8 KiB/s.
+
 ## Sequence
 
-1. `IdGet`, `ModeGet`
+1. `IdGet`, `FlashRead(SerialNumber)`, `ModeGet`
 2. `ModeSet(FileSystem)` if the box is not in file system mode
 3. `FileSystemMountGet`, `FileSystemMount` if not mounted
 4. Recursively `FileSystemList` per directory and `FileSystemStatusGet` per file;
-   for `--rm` then `FileSystemUnlink` per file / directory
+   for `--rm` then `FileSystemUnlink` per file / directory;
+   for `--get` per file `FileSystemReadStart` (switches the box to mode `FileSystemRead`),
+   `FileSystemRead` until a block is shorter than the block size, then `ModeSet(FileSystem)`
 5. `ModeSet(<previous mode>)` (also after an error or Ctrl-C), unless `--keep-mode`
 
 ## Protocol
@@ -105,10 +136,18 @@ Patterns are matched per path segment (a `*` does not cross a `/`):
 | FileSystemList | `0x0A20` |
 | FileSystemStatusGet | `0x0C20` |
 | FileSystemUnlink | `0x1320` |
+| FlashRead | `0x0800` |
+| FileSystemReadStart | `0x2020` (response id is `FileSystemRead`) |
+| FileSystemRead | `0x2021` |
 
 Other frames (debug output, log messages) received in between are ignored.
 
 ## Notes
+
+- **Git Bash:** arguments starting with `/` without wildcards (e.g. `-p /LOG`, `-x /LOG/OLD`)
+  are converted to Windows paths (`C:/Program Files/Git/LOG`). The script detects this and
+  stops with an error. Write `//LOG` instead, or set `MSYS_NO_PATHCONV=1`. PowerShell and cmd
+  are not affected.
 
 - While in file system mode the box does not run its normal application (no logging).
 - The box answers file system commands only in mode `FileSystem`; the script switches the mode

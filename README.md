@@ -76,7 +76,8 @@ log id call stack of every task; log ids can be resolved to names from the firmw
 
 Lists every file of the Edge2 box file system (eMMC) with size and modification date via the
 serial port (OptiScan protocol, as the ServiceTool), plus totals per directory. With `--rm`
-deletes files selected by wildcard patterns.
+deletes files selected by wildcard patterns, with `--get` downloads all files into
+`<BoxSerial>-<YYYYmmdd-HHMM>.zip`.
 
 [... read more ...](docs/analyze_emmc.md)
 
