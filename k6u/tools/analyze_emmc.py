@@ -1,15 +1,22 @@
 """
 analyze_emmc.py - listet über die serielle Schnittstelle alle Dateien im Dateisystem (eMMC)
-einer Edge2-Box mit Größe und Änderungsdatum auf.
+einer Edge2-Box mit Größe und Änderungsdatum auf bzw. löscht Dateien.
 
 Usage:
 
-    analyze_emmc <port> [-b <baudrate>] [-p <path>] [-o <csvfile>] [-t <timeout>] [--keep-mode] [-v]
+    analyze_emmc <port> [--ls] [-p <path>] [-o <csvfile>] [options]
+    analyze_emmc <port> --rm <pattern>... [-r] [-y] [options]
 
     port            - serial port, e.g. COM6 or /dev/ttyUSB0
-    -b <baudrate>   - default 115200
-    -p <path>       - start directory on the box (default: /)
+    --ls            - list all files with size (default command)
+    -p <path>       - start directory on the box for --ls (default: /)
     -o <csvfile>    - additionally write the list as CSV (path;type;size;modified)
+    --rm <pattern>  - delete files matching the pattern(s), wildcards per path segment:
+                      * ? [abc], ** = any number of directories, case-insensitive
+                      e.g. "/LOG/*.bin", "/**/*.tmp"
+    -r              - with --rm: also delete matching directories with their content
+    -y              - with --rm: do not ask for confirmation
+    -b <baudrate>   - default 115200
     -t <timeout>    - response timeout in seconds (default: 20)
     --keep-mode     - stay in file system mode (default: restore the previous mode)
     -v              - print every sent / received frame
@@ -22,13 +29,14 @@ Protokoll (wie ServiceToolGen2 / OptiScan):
     Response: same command id, on failure command id Error (0xEE00) + failed id + text
 
 Ablauf: ModeGet -> ModeSet(FileSystem) -> MountGet/Mount -> rekursiv FileSystemList und
-FileSystemStatusGet je Datei -> ModeSet(vorheriger Mode).
+FileSystemStatusGet je Datei (bzw. FileSystemUnlink) -> ModeSet(vorheriger Mode).
 """
 
 # == modules ==
 import argparse
 import base64
 import csv
+import fnmatch
 import struct
 import sys
 import time
@@ -62,6 +70,7 @@ CMD_FS_MOUNT = _cmd(MODE_FILE_SYSTEM, 0x05)
 CMD_FS_MOUNT_GET = _cmd(MODE_FILE_SYSTEM, 0x06)
 CMD_FS_LIST = _cmd(MODE_FILE_SYSTEM, 0x0A)
 CMD_FS_STATUS_GET = _cmd(MODE_FILE_SYSTEM, 0x0C)
+CMD_FS_UNLINK = _cmd(MODE_FILE_SYSTEM, 0x13)
 
 # file types (OptiScan/Commands/CommandFileInfo.h)
 TYPE_REGULAR = 0x00
@@ -232,6 +241,10 @@ class Edge2Device:
         r.end()
         return ftype, size, mtime
 
+    def unlink(self, path):
+        """Delete a file or an empty directory."""
+        self.request(CMD_FS_UNLINK, pack_string(path)).end()
+
 
 @dataclass
 class FileEntry:
@@ -284,6 +297,125 @@ def dir_totals(entries, root):
     return totals
 
 
+def find_matches(dev, pattern, cache):
+    """Return [(path, type)] matching pattern, wildcards per path segment, ** = any depth."""
+    if not pattern.startswith(PATH_SEP):
+        pattern = PATH_SEP + pattern
+    segments = [s for s in pattern.split(PATH_SEP) if s]
+    found = {}
+
+    def listing(path):
+        if path not in cache:
+            try:
+                cache[path] = [(t, n) for t, n in dev.list_dir(path) if n not in (".", "..")]
+            except DeviceError:
+                cache[path] = []  # directory does not exist
+        return cache[path]
+
+    def match(base, segs):
+        if not segs:
+            return
+        seg, rest = segs[0], segs[1:]
+        if seg == "**":
+            match(base, rest)  # zero directories
+            for ftype, name in listing(base):
+                if ftype == TYPE_DIRECTORY:
+                    match(join_path(base, name), segs)  # one or more directories
+            return
+        for ftype, name in listing(base):
+            if fnmatch.fnmatchcase(name.lower(), seg.lower()):
+                child = join_path(base, name)
+                if not rest:
+                    found[child] = ftype
+                elif ftype == TYPE_DIRECTORY:
+                    match(child, rest)
+
+    match(PATH_SEP, segments)
+    return sorted(found.items())
+
+
+def do_ls(dev, args):
+    entries = []
+    print()
+    print(f"{'SIZE':>12}  {'MODIFIED':<19}  PATH")
+    try:
+        walk(dev, args.path, entries,
+             lambda e: print(f"{e.size:>12}  {e.mtime:<19}  {e.path}", flush=True))
+    finally:
+        files = [e for e in entries if not e.is_dir]
+        if files:
+            print()
+            print(f"{'SIZE':>12}  {'FILES':>6}  DIRECTORY (incl. sub directories)")
+            for d, (size, count) in sorted(dir_totals(entries, args.path).items()):
+                print(f"{size:>12}  {count:>6}  {d}")
+            print()
+            print(f"Total: {len(files)} files, {len(entries) - len(files)} directories, "
+                  f"{sum(e.size for e in files)} bytes")
+        if args.csv and entries:
+            write_csv(args.csv, entries)
+            print(f"CSV written to {args.csv}")
+
+
+def do_rm(dev, args):
+    cache = {}
+    matches = {}
+    for pattern in args.rm:
+        found = find_matches(dev, pattern, cache)
+        if not found:
+            print(f"no match: {pattern}")
+        matches.update(found)
+
+    # build delete list: files, and with -r directories (content first, deepest first)
+    to_delete = []  # FileEntry
+    for path, ftype in sorted(matches.items()):
+        if ftype == TYPE_DIRECTORY:
+            if not args.recursive:
+                print(f"skipping directory {path} (use -r)")
+                continue
+            content = []
+            walk(dev, path, content, lambda e: None)
+            to_delete.extend(e for e in content if not e.is_dir)
+            to_delete.extend(sorted((e for e in content if e.is_dir), key=lambda e: -e.path.count(PATH_SEP)))
+            to_delete.append(FileEntry(path, True))
+        else:
+            _, size, mtime = dev.file_status(path)
+            to_delete.append(FileEntry(path, False, size, mtime))
+    # remove duplicates (overlapping patterns), keep order
+    seen = set()
+    to_delete = [e for e in to_delete if not (e.path in seen or seen.add(e.path))]
+    if not to_delete:
+        print("nothing to delete")
+        return
+
+    files = [e for e in to_delete if not e.is_dir]
+    print()
+    print(f"{'SIZE':>12}  {'MODIFIED':<19}  PATH")
+    for e in to_delete:
+        if e.is_dir:
+            print(f"{'<DIR>':>12}  {'':<19}  {e.path}")
+        else:
+            print(f"{e.size:>12}  {e.mtime:<19}  {e.path}")
+    summary = (f"{len(files)} files ({sum(e.size for e in files)} bytes), "
+               f"{len(to_delete) - len(files)} directories")
+    if not args.yes:
+        answer = input(f"\nDelete {summary}? [y/N] ").strip().lower()
+        if answer not in ("y", "yes", "j", "ja"):
+            print("nothing deleted")
+            return
+
+    n_ok = 0
+    for e in to_delete:
+        try:
+            dev.unlink(e.path)
+            n_ok += 1
+            print(f"deleted {e.path}")
+        except DeviceError as ex:
+            print(f"error: {e.path}: {ex}", file=sys.stderr)
+    print(f"\nDeleted {n_ok} of {len(to_delete)} entries")
+    if n_ok != len(to_delete):
+        raise DeviceError("not all entries could be deleted")
+
+
 def write_csv(path, entries):
     with open(path, "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f, delimiter=";")
@@ -294,11 +426,20 @@ def write_csv(path, entries):
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="List all files of the Edge2 box file system (eMMC) with size via serial port.")
+        description="List or delete files of the Edge2 box file system (eMMC) via serial port.")
     parser.add_argument("port", help="serial port, e.g. COM6 or /dev/ttyUSB0")
+    cmd = parser.add_mutually_exclusive_group()
+    cmd.add_argument("--ls", action="store_true", help="list all files with size (default)")
+    cmd.add_argument("--rm", nargs="+", metavar="PATTERN",
+                     help="delete files matching the pattern(s); wildcards * ? [..] per path segment, "
+                          "** = any number of directories, case-insensitive, e.g. \"/LOG/*.bin\"")
+    parser.add_argument("-p", "--path", default=PATH_SEP,
+                        help="--ls: start directory on the box (default: %(default)s)")
+    parser.add_argument("-o", "--csv", help="--ls: additionally write the list to this CSV file")
+    parser.add_argument("-r", "--recursive", action="store_true",
+                        help="--rm: also delete matching directories with their content")
+    parser.add_argument("-y", "--yes", action="store_true", help="--rm: do not ask for confirmation")
     parser.add_argument("-b", "--baudrate", type=int, default=115200, help="baudrate (default: %(default)s)")
-    parser.add_argument("-p", "--path", default=PATH_SEP, help="start directory on the box (default: %(default)s)")
-    parser.add_argument("-o", "--csv", help="additionally write the list to this CSV file")
     parser.add_argument("-t", "--timeout", type=float, default=20.0,
                         help="response timeout in seconds (default: %(default)s)")
     parser.add_argument("--keep-mode", action="store_true",
@@ -315,7 +456,6 @@ def main():
         print(f"error: {e}", file=sys.stderr)
         sys.exit(1)
 
-    entries = []
     old_mode = None
     rc = 0
     try:
@@ -328,13 +468,12 @@ def main():
         if not dev.is_mounted():
             print("Mounting file system ...")
             dev.mount()
-
-        print()
-        print(f"{'SIZE':>12}  {'MODIFIED':<19}  PATH")
-        walk(dev, args.path, entries,
-             lambda e: print(f"{e.size:>12}  {e.mtime:<19}  {e.path}", flush=True))
+        if args.rm:
+            do_rm(dev, args)
+        else:
+            do_ls(dev, args)
     except KeyboardInterrupt:
-        print("\nAborted by user (Ctrl-C), list is incomplete.", file=sys.stderr)
+        print("\nAborted by user (Ctrl-C).", file=sys.stderr)
         rc = 130
     except (DeviceError, TimeoutError, ValueError, serial.SerialException) as e:
         print(f"error: {e}", file=sys.stderr)
@@ -348,19 +487,6 @@ def main():
                 print(f"error: restoring mode failed: {e}", file=sys.stderr)
                 rc = rc or 1
         dev.close()
-
-    files = [e for e in entries if not e.is_dir]
-    if files:
-        print()
-        print(f"{'SIZE':>12}  {'FILES':>6}  DIRECTORY (incl. sub directories)")
-        for d, (size, count) in sorted(dir_totals(entries, args.path).items()):
-            print(f"{size:>12}  {count:>6}  {d}")
-        print()
-        print(f"Total: {len(files)} files, {len(entries) - len(files)} directories, "
-              f"{sum(e.size for e in files)} bytes")
-    if args.csv and entries:
-        write_csv(args.csv, entries)
-        print(f"CSV written to {args.csv}")
     sys.exit(rc)
 
 
