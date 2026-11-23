@@ -72,6 +72,13 @@ log id call stack of every task; log ids can be resolved to names from the firmw
 
 [... read more ...](docs/task_monitor.md)
 
+### `analyze_emmc`
+
+Lists every file of the Edge2 box file system (eMMC) with size and modification date via the
+serial port (OptiScan protocol, as the ServiceTool), plus totals per directory.
+
+[... read more ...](docs/analyze_emmc.md)
+
 
 ### `lin_send_ldf`
 
