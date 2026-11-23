@@ -4,8 +4,8 @@ import os
 import sys
 CANIOS = [ 4, 14, 15, 17, 18, 27, 22, 23, 24, 10, 9, 25, 11, 8, 7, 0, 1, 5, 6, 12, 13, 19, 16, 26]
 
-KL15 = 2
-KL30 = 3
+KL15 = 3
+KL30 = 2
 
 class CanSwitchMatrix(UserDict):    
     CANS = []
