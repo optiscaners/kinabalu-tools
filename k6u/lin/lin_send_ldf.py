@@ -2,9 +2,10 @@
 Send LIN frames from an LDF file over a PLin-compatible interface.
 
 Usage:
-    python lin_send_ldf.py -l <ldf_file> [-i] [-r <repeat_count>]
+    python lin_send_ldf.py -l <ldf_file> [-C <channel>] [-i] [-r <repeat_count>]
 
 Options:
+    -C, --channel       number of PEAK Lin channel (default: 2) (default = 1)
     -D, --dump-signals  Show signals in ldf and exit
     -h, --help          Show this help text and exit.
     -i, --interactive   Pause between frames and wait for Enter.
@@ -22,7 +23,7 @@ Example:
 from ctypes import *
 import getopt
 import ldfparser
-import k6u.lin.PlinApi as PLinApi
+from k6u.lin.PlinApi import PLinApi
 import sys
 import time
 import traceback
@@ -259,14 +260,17 @@ def parse_args():
         "interactive": False,
         "ldf_file": None,
         "rpt_count": 1,
-        "signals" : []
+        "signals" : [],
+        "channel" : 2
     }
     try:        
-        opts, args = getopt.getopt(sys.argv[1:], "hl:ir:S:D", ["help", "ldf=", "interactive", "rpt=", "signal=", "dump-signals"])
+        opts, args = getopt.getopt(sys.argv[1:], "hl:ir:S:DC:", ["help", "ldf=", "interactive", "rpt=", "signal=", "dump-signals", "channel="])
         for o, v in opts:
             if o in ("-h", "--help"):
                 print(__doc__)
                 sys.exit(0)
+            elif o in ("-C", "--channel"):
+                cfg["channel"] = int(v)
             elif o in ("-l", "--ldf"):
                 cfg["ldf_file"] = v
             elif o in ("-i", "--interactive"):
@@ -295,7 +299,7 @@ def main():
     currentFrameList = FrameList(currentLdf, cfg["signals"])
 
     LinTransmitter = LinMaster()
-    LinTransmitter.configure()
+    LinTransmitter.configure(channel = cfg["channel"])
     LinTransmitter.initialize()
 
     tx_cnt = 0

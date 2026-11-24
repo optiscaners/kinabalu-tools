@@ -11,7 +11,7 @@ Usage:
 Für jede Box wird das Topic "<topic>/<box>/Status/Connection" abonniert,
 Inhalt ist "Online" oder "Offline".
 Zusätzlich wird "<topic>/<box>/Status/Connection/<date-string>" abonniert,
-aus dem JSON-Payload werden "Id", "Version" und "SmuResetCounter" angezeigt.
+aus dem JSON-Payload werden "Id", "Version", "SmuResetCounter" und "StartupCounter" angezeigt.
 
 Config file (YAML):
 
@@ -61,6 +61,7 @@ class Box:
         self.dev_id = None  # "Id" from connection info message
         self.dev_version = None  # "Id" from connection info message
         self.smu_resets = None  # "SmuResetCounter" from connection info message
+        self.startups = None  # "StartupCounter" from connection info message
 
     @property
     def mqtt_topic(self):
@@ -79,6 +80,8 @@ class Box:
             self.smu_resets = info["SmuResetCounter"]
         if "Version" in info:
             self.dev_version = info["Version"]
+        if "StartupCounter" in info:
+            self.startups = info["StartupCounter"]
 
     def update(self, payload):
         now = time.time()
@@ -94,6 +97,7 @@ class Box:
         self.dev_id = None
         self.dev_version = None
         self.smu_resets = None
+        self.startups = None
 
 
 # MQTT connection and status table
@@ -251,7 +255,8 @@ def draw(win, monitor, sort_mode, scroll):
         rows = [(b.topic, b.box, b.name, b.status, b.since, b.last_msg,
                  b.dev_id or "-", 
                  b.dev_version or "-", 
-                 "-" if b.smu_resets is None else str(b.smu_resets)) 
+                 "-" if b.smu_resets is None else str(b.smu_resets),
+                 "-" if b.startups is None else str(b.startups))
                  for b in boxes]
         connected = monitor.connected
         conn_info = monitor.conn_info
@@ -281,20 +286,21 @@ def draw(win, monitor, sort_mode, scroll):
     w_name = max([4] + [len(r[2]) for r in rows])
     w_id = max([2] + [len(r[6]) for r in rows])    
     w_version = max([4] + [len(r[7]) for r in rows])
+    w_stuc = max([4] + [len(r[9]) for r in rows])
     hdr = (f" {'TOPIC':<{w_topic}}  {'BOX':<{w_box}}  {'NAME':<{w_name}}  {'STATUS':<8}  {'SINCE':>8}  {'LAST MSG':>8}"
-           f"  {'ID':<{w_id}}  {'VERS':<{w_version}}  {'SMU RST':>7}")
+           f"  {'ID':<{w_id}}  {'VERS':<{w_version}}  {'SMU RST':>7}  {'STUC':>{w_stuc}}")
     put(win, 5, 0, hdr.ljust(w), curses.color_pair(4))
 
     body_top = 6
     body_h = max(0, h - body_top - 1)
     scroll = max(0, min(scroll, len(rows) - body_h))
-    for i, (topic, box, name, status, since, last_msg, dev_id, dev_version, smu_resets) in enumerate(rows[scroll:scroll + body_h]):
+    for i, (topic, box, name, status, since, last_msg, dev_id, dev_version, smu_resets, startups) in enumerate(rows[scroll:scroll + body_h]):
         y = body_top + i
         put(win, y, 0, f" {topic:<{w_topic}}  {box:<{w_box}}  {name:<{w_name}}  ")
         x = 1 + w_topic + 2 + w_box + 2 + w_name + 2
         put(win, y, x, f"{status or '?':<8}", status_attr(status))
         put(win, y, x + 8, f"  {fmt_age(since, now):>8}  {fmt_age(last_msg, now):>8}"
-                           f"  {dev_id:<{w_id}}  {dev_version:<{w_version}}  {smu_resets:>7}")
+                           f"  {dev_id:<{w_id}}  {dev_version:<{w_version}}  {smu_resets:>7}  {startups:>{w_stuc}}")
 
     footer = " q:Quit  s:Sort  c:Clear  Up/Down/PgUp/PgDn:Scroll"
     if len(rows) > body_h:

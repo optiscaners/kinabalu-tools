@@ -7,13 +7,14 @@ Frame layout and signal positions are taken from the LDF; signal values can be s
 ## Usage
 
 ```sh
-lin_send_ldf -l <ldf_file> [-r <count>] [-i] [-S <signalspec> ...]
+lin_send_ldf -l <ldf_file> [-C <channel>] [-r <count>] [-i] [-S <signalspec> ...]
 lin_send_ldf -l <ldf_file> -D
 ```
 
 | Option | Meaning |
 |---|---|
 | `-l`, `--ldf <file>` | LIN description file (`.ldf`) |
+| `-C`, `--channel <n>` | PEAK PLIN hardware channel (default: 2), see below |
 | `-r`, `--rpt <count>` | Number of passes over the frame list (default: 1) |
 | `-i`, `--interactive` | Wait for Enter before each frame (see below) |
 | `-S`, `--signal <spec>` | Set a signal value or value sequence; can be given several times |
@@ -27,6 +28,12 @@ python lin_send_ldf.py -l examples/THERMO_LIN2_2026_07a.ldf -r 10
 ```
 
 This command sends all frames defined `THERMO_LIN2_2026_07a.ldf` 10 times.
+
+```sh
+lin_send_ldf -l examples/THERMO_LIN2_2026_07a.ldf -C 1 -r 10
+```
+
+Same, but on PLIN hardware channel 1.
 
 ## Which frames are sent
 
@@ -71,13 +78,17 @@ Before each frame the prompt `> Press Enter to send frame[n] ...` is shown.
 
 | Setting | Value |
 |---|---|
-| PLIN hardware channel | 2 |
+| PLIN hardware channel | 2, can be changed with `-C` |
 | Baud rate | 19200 |
 | Mode | Master |
 | Checksum | Enhanced (for all frames) |
 | Frame interval | approx. 50 ms |
 
-These values are fixed in the code (`LinMaster.configure()` and the `time.sleep()` in `main()`).
+The channel is the hardware handle of the PLIN API (`HLINHW`): each LIN channel of the
+connected PLIN devices has its own number, assigned by the PEAK driver. The available
+channels are shown in the PEAK tools (e.g. PLIN-View Pro).
+
+The other values are fixed in the code (`LinMaster.configure()` and the `time.sleep()` in `main()`).
 The frames are sent by the script one by one (software sending). The LDF schedule tables
 and the PLIN hardware scheduler are not used.
 
@@ -91,7 +102,7 @@ and the PLIN hardware scheduler are not used.
 
 ## Known limitations
 
-- Channel, baud rate and frame interval cannot be set on the command line.
+- Baud rate and frame interval cannot be set on the command line.
 - Only publisher frames sent by the master. Slave responses are not requested or shown.
 - Signal values are not checked against the signal width. Values that are too large fail
   when the frame is encoded.
