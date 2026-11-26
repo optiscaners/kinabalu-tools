@@ -11,5 +11,6 @@
 | [task_monitor](task_monitor.md) | Decode task monitor dumps (watchdog state, log id call stack) |
 | [analyze_emmc](analyze_emmc.md) | List all files of the Edge2 box file system (eMMC) with size via serial port |
 | [analyze_serial_log](analyze_serial_log.md) | Message and match rates per second of the CAN / LIN counters in a box serial log |
+| [serial_log_with_ts](serial_log_with_ts.md) | Log a serial port to a file with a PC time stamp on every line |
 
 See also [development.md](development.md) for setup, linting and project layout.

@@ -88,6 +88,12 @@ prints message and match rates per second for every CAN / LIN counter, plus CAN 
 
 [... read more ...](docs/analyze_serial_log.md)
 
+### `serial_log_with_ts`
+
+Logs a serial port (box debug output) to a file and to stdout with a PC time stamp on every line.
+
+[... read more ...](docs/serial_log_with_ts.md)
+
 
 ### `lin_send_ldf`
 
