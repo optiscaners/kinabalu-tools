@@ -31,6 +31,7 @@ task_monitor = "k6u.tools.task_monitor:main"
 analyze_emmc = "k6u.tools.analyze_emmc:main"
 raspi_can_relais = "k6u.can.raspi_can_relais:main"
 serial_log_with_ts = "k6u.tools.serial_log_with_ts:main"
+analyze_serial_log = "k6u.tools.analyze_serial_log:main"
 
 [dependency-groups]
 dev = [

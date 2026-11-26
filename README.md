@@ -81,6 +81,13 @@ deletes files selected by wildcard patterns, with `--get` downloads all files in
 
 [... read more ...](docs/analyze_emmc.md)
 
+### `analyze_serial_log`
+
+Evaluates the `match =` counter lines of a box serial log (written by `serial_log_with_ts`) and
+prints message and match rates per second for every CAN / LIN counter, plus CAN and LIN sums.
+
+[... read more ...](docs/analyze_serial_log.md)
+
 
 ### `lin_send_ldf`
 
