@@ -49,12 +49,18 @@ def hw29_500k_on():
 def hw29_voicetocan():
     set_can_relais("voice", ["Can1"])
 
+def hw29_can_relais_off():
+    set_can_relais("all", [f"Can{c}" for c in range(1,20)], False)
 
-def set_can_relais(diag, can_list):
+def set_can_relais(diag, can_list, stateOn = True):
     print(f"Enable {diag} {can_list}")
     for can in can_list:
-        print(f"  - Enable {can}")
-        REL[can.upper()].on()
+        if stateOn:
+            print(f"  - Enable {can}")
+            REL[can.upper()].on()
+        else:
+            print(f"  - Disable {can}")
+            REL[can.upper()].off()
 
 def persist_pin_state():
     # os._exit ends the process without running gpiozero's shutdown handler, 

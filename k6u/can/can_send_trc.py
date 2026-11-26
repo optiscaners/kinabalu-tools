@@ -50,9 +50,10 @@ class CanTrcTx:
     def start_busses(self, nominalBitrate, dataBitrate=None, tx_self_ack=True):
         """bus1 sends; on Windows bus2 is opened on the second PCAN channel (e.g. to ACK frames).
         On Linux only one bus is used (presume-ack on)."""
+        tx_self_ack=False
         self.bus1 = can_bus_setup.start_bus(self.pcan_channels[0], nominalBitrate, dataBitrate, tx_self_ack)
-        if sys.platform == "win32" and len(self.pcan_channels) > 1:
-            self.bus2 = can_bus_setup.start_bus(self.pcan_channels[1], nominalBitrate, dataBitrate)
+        if sys.platform == "win32" or len(self.pcan_channels) > 1:
+            self.bus2 = can_bus_setup.start_bus(self.pcan_channels[1], nominalBitrate, dataBitrate, tx_self_ack)
 
     def stop_busses(self):
         can_bus_setup.stop_bus(self.bus1)
@@ -80,7 +81,7 @@ class CanTrcTx:
                 else:
                     delay = msg.timestamp - last_ts
                     last_ts = msg.timestamp
-                    delay = 0
+                    #delay = 0
                     if delay > 0:
                         time.sleep(delay)
                     else: 
@@ -222,8 +223,8 @@ def parse_args():
     return cfg
 
 def main():
-    try:
-        cantrx = CanTrcTx()
+    try:        
+        cantrx = CanTrcTx(("can0", "can1"))
         cfg = parse_args()
         for rpt in range(cfg["rpt_cnt"]):
             for bus in cfg["busses"]:
