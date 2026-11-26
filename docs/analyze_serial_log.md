@@ -4,7 +4,7 @@ Evaluates the counter lines of a box serial log and prints, for every CAN / LIN 
 received messages and matches per second, plus the sums for all CAN and all LIN counters,
 and the total load of all tasks.
 
-The log is the output of [serial_log_with_ts](../k6u/tools/serial_log_with_ts.py) (PC time
+The log is the output of [serial_log_with_ts](serial_log_with_ts.md) (PC time
 stamp per line).
 
 ## Usage
