@@ -73,6 +73,7 @@ def _cmd(group, high):
     return (high << 8) | group
 
 
+CMD_SOFTWARE_VERSION_GET = _cmd(0x00, 0x02)
 CMD_ID_GET = _cmd(0x00, 0x03)
 CMD_MODE_GET = _cmd(0x00, 0x04)
 CMD_MODE_SET = _cmd(0x00, 0x05)
@@ -279,6 +280,17 @@ class Edge2Device:
         value = r.string()
         r.end()
         return value
+
+    def get_software_version(self):
+        """Firmware version (Version3: major, minor, patch uint16, optional special string)."""
+        r = self.request(CMD_SOFTWARE_VERSION_GET)
+        version = f"{r.u16()}.{r.u16()}.{r.u16()}"
+        if r.can_read():
+            special = r.string()
+            if special:
+                version += f"-{special}"
+        r.end()
+        return version
 
     def get_mode(self):
         r = self.request(CMD_MODE_GET)
