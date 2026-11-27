@@ -12,7 +12,7 @@ Uses the same OptiScan base64 protocol as the ServiceTool
 ```sh
 analyze_emmc <port> [--ls] [-p <path>] [-o <csvfile>] [options]
 analyze_emmc <port> --rm <pattern>... [-r] [-y] [options]
-analyze_emmc <port> --get [-p <path>] [-x <pattern>]... [--block-size <n>] [options]
+analyze_emmc <port> --get [-p <path>] [-x <pattern>]... [-B <n>] [options]
 ```
 
 | Option | Meaning |
@@ -26,9 +26,11 @@ analyze_emmc <port> --get [-p <path>] [-x <pattern>]... [--block-size <n>] [opti
 | `-y` | `--rm`: do not ask for confirmation |
 | `--get` | Download all files (below `-p`) into `<BoxSerial>-<YYYYmmdd-HHMM>.zip` |
 | `-x <pattern>` | `--get`: exclude matching files / directories (repeatable, see below) |
-| `--block-size <n>` | `--get`: bytes per read request (default: baudrate / 20, at least 512, as the ServiceTool) |
-| `-b <baudrate>` | Baudrate (default: 115200) |
-| `-t <timeout>` | Response timeout in seconds (default: 20) |
+| `-B`, `--block-size <n>` | `--get`: bytes per read request (default: baudrate / 20, at least 512, at most 2048) |
+| `-b <baudrate>` | Baudrate to connect with (default: 115200) |
+| `-f` | Switch the box to the fast baudrate after connecting, back to `-b` at the end (see below) |
+| `--fast-baudrate <n>` | Baudrate for `-f` (default: 1500000) |
+| `-t <timeout>` | Response timeout in seconds (default: 20): time without any data from the box |
 | `--keep-mode` | Stay in file system mode after the listing |
 | `-v` | Print every sent / received frame (hex) to stderr |
 | `-h` | Show help |
@@ -106,11 +108,35 @@ Exclude patterns (`-x`, repeatable) use the same wildcards as `--rm`:
 - A file that cannot be read is reported and skipped, the other files are still downloaded;
   exit code is 1.
 - On Ctrl-C the zip file is closed properly but is incomplete (marked in the output).
-- The transfer rate is limited by the baudrate: at 115200 baud roughly 8 KiB/s.
+- The transfer rate is limited by the baudrate: at 115200 baud roughly 8 KiB/s. Use `-f` for
+  larger downloads.
+
+## Fast baudrate (`-f`)
+
+```sh
+analyze_emmc COM6 --get -f
+```
+
+The script connects at `-b` (115200) and then sends `BaudRateSet(1500000)`, like the ServiceTool
+does before an init. The box acknowledges at the old baudrate and then switches its UART.
+The script closes the PC port, reopens it at the new baudrate and checks the connection with `ModeGet`.
+The default block size for `--get` is limited to 2048 bytes (larger blocks failed at 1500000 baud with the Pegasus20 box).
+
+- At the end (also after an error or Ctrl-C) the box is switched back to `-b`, so the next
+  connection at 115200 works. If that fails, the box stays at the fast baudrate until it is
+  rebooted. Connect with `-b 1500000` in that case.
+- If the box does not support the baudrate, the script stops with an error and prints the
+  supported baudrates (`BaudRateList`).
+- The USB serial adapter must support the fast baudrate.
+- If the box stops answering at the fast baudrate, the script checks whether it answers at `-b`
+  again. If so, the box has restarted (e.g. watchdog of the Main task, 10 s in the Pegasus20
+  firmware, which reads files byte by byte); mode and baudrate are then reset by the box.
+  Try a smaller `--block-size` in that case. The timeout message shows how many
+  bytes of the response were received before it stopped.
 
 ## Sequence
 
-1. `IdGet`, `FlashRead(SerialNumber)`, `ModeGet`
+1. `IdGet`, `FlashRead(SerialNumber)`, with `-f` `BaudRateSet(<fast>)`, then `ModeGet`
 2. `ModeSet(FileSystem)` if the box is not in file system mode
 3. `FileSystemMountGet`, `FileSystemMount` if not mounted
 4. Recursively `FileSystemList` per directory and `FileSystemStatusGet` per file;
@@ -118,6 +144,7 @@ Exclude patterns (`-x`, repeatable) use the same wildcards as `--rm`:
    for `--get` per file `FileSystemReadStart` (switches the box to mode `FileSystemRead`),
    `FileSystemRead` until a block is shorter than the block size, then `ModeSet(FileSystem)`
 5. `ModeSet(<previous mode>)` (also after an error or Ctrl-C), unless `--keep-mode`
+6. With `-f`: `BaudRateSet(<-b>)`
 
 ## Protocol
 
@@ -137,6 +164,7 @@ Exclude patterns (`-x`, repeatable) use the same wildcards as `--rm`:
 | FileSystemStatusGet | `0x0C20` |
 | FileSystemUnlink | `0x1320` |
 | FlashRead | `0x0800` |
+| BaudRateList / BaudRateSet | `0x1000` / `0x1100` (parameter: baudrate uint32) |
 | FileSystemReadStart | `0x2020` (response id is `FileSystemRead`) |
 | FileSystemRead | `0x2021` |
 

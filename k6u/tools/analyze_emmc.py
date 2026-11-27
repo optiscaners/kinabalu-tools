@@ -6,7 +6,7 @@ Usage:
 
     analyze_emmc <port> [--ls] [-p <path>] [-o <csvfile>] [options]
     analyze_emmc <port> --rm <pattern>... [-r] [-y] [options]
-    analyze_emmc <port> --get [-p <path>] [-x <pattern>]... [--block-size <n>] [options]
+    analyze_emmc <port> --get [-p <path>] [-x <pattern>]... [-B <n>] [options]
 
     port            - serial port, e.g. COM6 or /dev/ttyUSB0
     --ls            - list all files with size (default command)
@@ -20,8 +20,10 @@ Usage:
     --get           - download all files (below -p) into <BoxSerial>-<YYYYmmdd-HHMM>.zip
     -x <pattern>    - with --get: exclude matching files / directories (repeatable),
                       a pattern without '/' matches the name in any directory, e.g. -x "*.bin"
-    --block-size <n> - with --get: bytes per read request (default: baudrate / 20, min. 512)
-    -b <baudrate>   - default 115200
+    -B, --block-size <n> - with --get: bytes per read request (default: baudrate / 20, 512..2048)
+    -b <baudrate>   - baudrate to connect with, default 115200
+    -f              - switch to the fast baudrate (BaudRateSet) after connecting, back to -b at the end
+    --fast-baudrate <n> - baudrate for -f (default: 1500000)
     -t <timeout>    - response timeout in seconds (default: 20)
     --keep-mode     - stay in file system mode (default: restore the previous mode)
     -v              - print every sent / received frame
@@ -75,6 +77,8 @@ CMD_ID_GET = _cmd(0x00, 0x03)
 CMD_MODE_GET = _cmd(0x00, 0x04)
 CMD_MODE_SET = _cmd(0x00, 0x05)
 CMD_FLASH_READ = _cmd(0x00, 0x08)
+CMD_BAUDRATE_LIST = _cmd(0x00, 0x10)
+CMD_BAUDRATE_SET = _cmd(0x00, 0x11)
 CMD_ERROR = _cmd(0x00, 0xEE)
 CMD_FS_MOUNT = _cmd(MODE_FILE_SYSTEM, 0x05)
 CMD_FS_MOUNT_GET = _cmd(MODE_FILE_SYSTEM, 0x06)
@@ -93,6 +97,9 @@ TYPE_REGULAR = 0x00
 TYPE_DIRECTORY = 0x10
 
 PATH_SEP = "/"
+
+MAX_BLOCK_SIZE = 512     # default block size limit: larger blocks fail at 1500000 baud (Pegasus20)
+FAST_BAUDRATE = 1500000  # highest entry of the ServiceTool baudrate list
 
 # == classes ==
 
@@ -155,10 +162,43 @@ class Edge2Device:
     """OptiScan base64 protocol over a serial port."""
 
     def __init__(self, port, baudrate, timeout, verbose=False):
+        # short read timeout: _read_byte() polls and checks the response deadline itself
         self.ser = serial.Serial(port, baudrate, timeout=0.1)
-        self.timeout = timeout
+        self.timeout = timeout  # response (inactivity) timeout
         self.verbose = verbose
+        self._rx = b""  # received bytes not yet processed
+        self._rx_pos = 0
+        self._deadline = 0.0
+        self._reset_rx()
+
+    def reopen(self, baudrate):
+        """Close and reopen the port with a new baudrate (changing the baudrate of the open
+        port is not sufficient for the USB serial adapter). Other settings are kept."""
+        self.ser.close()
+        self.ser.baudrate = baudrate
+        self.ser.open()
+        self._reset_rx()
+
+    def answers_at(self, baudrate, timeout=2.0):
+        """Reopen the port at baudrate and check with IdGet if the box answers. Used after a
+        timeout at the fast baudrate: a restarted box (e.g. watchdog) is back at the slow baudrate.
+        If the box does not answer, the port is set back to the previous baudrate."""
+        previous = self.ser.baudrate
+        self.reopen(baudrate)
+        old_timeout, self.timeout = self.timeout, timeout
+        try:
+            self.get_id()
+            return True
+        except (TimeoutError, ValueError, DeviceError):
+            self.reopen(previous)
+            return False
+        finally:
+            self.timeout = old_timeout
+
+    def _reset_rx(self):
         self.ser.reset_input_buffer()
+        self._rx = b""
+        self._rx_pos = 0
 
     def close(self):
         self.ser.close()
@@ -174,9 +214,9 @@ class Edge2Device:
             print(f"  >> {cmd_id:04X} {params.hex()}", file=sys.stderr)
         self.ser.write(frame)
 
-        deadline = time.monotonic() + self.timeout
+        self._deadline = time.monotonic() + self.timeout
         while True:
-            payload = self._receive_base64(deadline)
+            payload = self._receive_base64()
             if payload is None or len(payload) < 2:
                 continue
             reader = Reader(payload)
@@ -191,16 +231,19 @@ class Edge2Device:
                 raise DeviceError(f"device error for command 0x{failed_id:04X}: {text}")
             # other frames (e.g. log messages) are ignored
 
-    def _receive_base64(self, deadline):
+    def _receive_base64(self):
         """Read one frame, return the decoded payload of a base64 frame or None for other frames."""
         # wait for frame start
         while True:
-            b = self._read_byte(deadline)
+            b = self._read_byte()
             if b == FRAME_START:
                 break
         buf = bytearray()
         while True:
-            b = self._read_byte(deadline)
+            try:
+                b = self._read_byte()
+            except TimeoutError as e:
+                raise TimeoutError(f"{e}; response stopped after {len(buf)} bytes of a frame") from e
             if b == FRAME_END:
                 break
             if b == FRAME_START:  # frame restarted, resync
@@ -214,13 +257,20 @@ class Edge2Device:
         except ValueError:
             return None
 
-    def _read_byte(self, deadline):
-        while True:
-            b = self.ser.read(1)
-            if b:
-                return b[0]
-            if time.monotonic() > deadline:
+    def _read_byte(self):
+        """Next received byte. The timeout is an inactivity timeout: it is restarted whenever data
+        arrives, so long responses (large read blocks, the box reads byte by byte) do not time out."""
+        while self._rx_pos >= len(self._rx):
+            chunk = self.ser.read(max(1, self.ser.in_waiting))
+            if chunk:
+                self._rx = chunk
+                self._rx_pos = 0
+                self._deadline = time.monotonic() + self.timeout
+            elif time.monotonic() > self._deadline:
                 raise TimeoutError("no response from box (check port, baudrate and cable)")
+        b = self._rx[self._rx_pos]
+        self._rx_pos += 1
+        return b
 
     # -- commands --
 
@@ -270,6 +320,35 @@ class Edge2Device:
         """Delete a file or an empty directory."""
         self.request(CMD_FS_UNLINK, pack_string(path)).end()
 
+    def list_baudrates(self):
+        r = self.request(CMD_BAUDRATE_LIST)
+        rates = []
+        while r.can_read():
+            rates.append(r.u32())
+        return rates
+
+    def switch_baudrate(self, baudrate):
+        """Switch box and PC port to a new baudrate (BaudRateSet). The box acknowledges at the
+        old baudrate, then re-initializes its UART. The new connection is checked with ModeGet."""
+        if baudrate == self.ser.baudrate:
+            return
+        self.request(CMD_BAUDRATE_SET, struct.pack("<I", baudrate)).end()
+        time.sleep(0.05)  # box: wait for output, re-init UART
+        self.reopen(baudrate)
+        last_error = None
+        for _ in range(3):  # first frame after the switch may be garbled
+            try:
+                old_timeout, self.timeout = self.timeout, min(self.timeout, 2.0)
+                try:
+                    self.get_mode()
+                finally:
+                    self.timeout = old_timeout
+                return
+            except (TimeoutError, ValueError) as e:
+                last_error = e
+                self._reset_rx()
+        raise TimeoutError(f"no response after switching to {baudrate} baud: {last_error}")
+
     def get_serial(self):
         """Box serial number as 12 digit text (as shown by the ServiceTool)."""
         r = self.request(CMD_FLASH_READ, struct.pack("<I", FLASH_SERIAL_NUMBER))
@@ -283,8 +362,10 @@ class Edge2Device:
 
     def read_file(self, path, block_size, progress=None):
         """Read a whole file. The box is in mode FileSystemRead during the transfer and
-        is switched back to FileSystem afterwards (also on error / Ctrl-C)."""
+        is switched back to FileSystem afterwards (also on error / Ctrl-C, not after a timeout:
+        the box does not answer then)."""
         data = bytearray()
+        timed_out = False
         try:
             r = self.request(CMD_FS_READ_START, pack_string(path) + struct.pack("<QI", 0, block_size),
                              resp_id=CMD_FS_READ)
@@ -299,9 +380,13 @@ class Edge2Device:
                 if len(block) < block_size:
                     break  # short block = end of file
                 r = self.request(CMD_FS_READ)
+        except TimeoutError:
+            timed_out = True
+            raise
         finally:
-            # leave mode FileSystemRead, closes the file on the box
-            self.set_mode(MODE_FILE_SYSTEM)
+            if not timed_out:
+                # leave mode FileSystemRead, closes the file on the box
+                self.set_mode(MODE_FILE_SYSTEM)
         return bytes(data)
 
 
@@ -526,7 +611,7 @@ def do_get(dev, args, serial_no):
     files = [e for e in entries if not e.is_dir]
     total = sum(e.size for e in files)
     zip_name = f"{serial_no}-{datetime.now():%Y%m%d-%H%M}.zip"
-    block_size = args.block_size or max(512, args.baudrate // 20)
+    block_size = args.block_size or min(MAX_BLOCK_SIZE, max(512, dev.ser.baudrate // 20))
     print(f"\nDownloading {len(files)} files, {total} bytes into {zip_name} (block size {block_size})\n")
 
     done_bytes = 0
@@ -594,13 +679,19 @@ def parse_args():
     parser.add_argument("-x", "--exclude", action="append", metavar="PATTERN",
                         help="--get: do not download files / directories matching the pattern (repeatable); "
                              "wildcards as --rm, a pattern without '/' matches the name in any directory")
-    parser.add_argument("--block-size", type=int,
-                        help="--get: bytes per read request (default: baudrate / 20, min. 512)")
+    parser.add_argument("-B", "--block-size", type=int,
+                        help="--get: bytes per read request (default: baudrate / 20, 512..2048)")
     parser.add_argument("-o", "--csv", help="--ls: additionally write the list to this CSV file")
     parser.add_argument("-r", "--recursive", action="store_true",
                         help="--rm: also delete matching directories with their content")
     parser.add_argument("-y", "--yes", action="store_true", help="--rm: do not ask for confirmation")
-    parser.add_argument("-b", "--baudrate", type=int, default=115200, help="baudrate (default: %(default)s)")
+    parser.add_argument("-b", "--baudrate", type=int, default=115200,
+                        help="baudrate to connect with (default: %(default)s)")
+    parser.add_argument("-f", "--fast", action="store_true",
+                        help="switch the box to the fast baudrate after connecting (BaudRateSet) "
+                             "and back to -b at the end")
+    parser.add_argument("--fast-baudrate", type=int, default=FAST_BAUDRATE,
+                        help="baudrate for -f (default: %(default)s)")
     parser.add_argument("-t", "--timeout", type=float, default=20.0,
                         help="response timeout in seconds (default: %(default)s)")
     parser.add_argument("--keep-mode", action="store_true",
@@ -634,6 +725,13 @@ def main():
         print(f"Box id: {dev.get_id()}")
         serial_no = dev.get_serial()
         print(f"Serial: {serial_no}")
+        if args.fast and args.fast_baudrate != args.baudrate:
+            print(f"Switching to {args.fast_baudrate} baud ...")
+            try:
+                dev.switch_baudrate(args.fast_baudrate)
+            except DeviceError as e:
+                rates = dev.list_baudrates()
+                raise DeviceError(f"{e} (box supports {', '.join(map(str, rates))})") from e
         old_mode = dev.get_mode()
         print(f"Mode:   {MODE_NAMES.get(old_mode, hex(old_mode))}")
         if old_mode != MODE_FILE_SYSTEM:
@@ -654,6 +752,12 @@ def main():
     except (DeviceError, TimeoutError, ValueError, serial.SerialException) as e:
         print(f"error: {e}", file=sys.stderr)
         rc = 1
+        if isinstance(e, TimeoutError) and dev.ser.baudrate != args.baudrate:
+            print(f"Checking if the box answers at {args.baudrate} baud ...", file=sys.stderr)
+            if dev.answers_at(args.baudrate):
+                print(f"error: box answers at {args.baudrate} baud again - it has restarted "
+                      "(watchdog?), mode and baudrate are reset", file=sys.stderr)
+                old_mode = None  # box is in its start mode, nothing to restore
     finally:
         if old_mode is not None and old_mode != MODE_FILE_SYSTEM and not args.keep_mode:
             try:
@@ -661,6 +765,14 @@ def main():
                 dev.set_mode(old_mode)
             except (DeviceError, TimeoutError, ValueError, serial.SerialException) as e:
                 print(f"error: restoring mode failed: {e}", file=sys.stderr)
+                rc = rc or 1
+        if dev.ser.baudrate != args.baudrate:
+            try:
+                print(f"Restoring {args.baudrate} baud ...")
+                dev.switch_baudrate(args.baudrate)
+            except (DeviceError, TimeoutError, ValueError, serial.SerialException) as e:
+                print(f"error: restoring baudrate failed, box stays at {dev.ser.baudrate} baud "
+                      f"until reboot: {e}", file=sys.stderr)
                 rc = rc or 1
         dev.close()
     sys.exit(rc)
