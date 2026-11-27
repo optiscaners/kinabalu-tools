@@ -60,4 +60,4 @@ Before logging, the script sends the following OptiScan commands (same protocol 
   It is complete after the end (Ctrl-C or `-d` elapsed).
 - At the end the number of logged lines and the log file name are printed.
 - The log can be evaluated with [analyze_serial_log](analyze_serial_log.md) (CAN / LIN rates,
-  task load); the header line is ignored there.
+  task load); the header line is copied to its output.

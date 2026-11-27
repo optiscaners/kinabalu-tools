@@ -59,6 +59,8 @@ ts2, class, nb_msg_per_second, nb_matches_per_second
   appears again.
 - Lines containing `Hello World` (box start message, e.g. `# Hello World! (Pegasus20Gen2)`) are
   copied unchanged to stdout at their position, also with `-s`. They mark a box restart.
+- The status line written by serial_log_with_ts at the start of the log
+  (`# serial_log_with_ts: box=... version=...`) is copied unchanged to stdout, also with `-s`.
 
 ```sh
 analyze_serial_log 3004_V65_real_can.log -s -d ";" > rates.csv

@@ -35,7 +35,8 @@ kleiner (Box-Neustart), wird das Paar übersprungen.
 Task load: die load-Werte aller Tasks (ohne IDLE) eines Blocks ("# task load: <Task> nr=.. load=..%") werden
 summiert und als "<ts> : # task load: ALL nr=xx prio=xx load=<Summe>% stackFree=xx" ausgegeben.
 
-Zeilen mit "Hello World" (Box-Start) und die task load-Zeilen von Main und Gsm werden
+Die Statuszeile "# serial_log_with_ts: box=.. version=.." (Log-Kopf), Zeilen mit "Hello World"
+(Box-Start) und die task load-Zeilen von Main und Gsm werden
 unverändert ausgegeben.
 """
 
@@ -56,6 +57,7 @@ FIELD_RE = re.compile(r"(\w+)\s*=\s*(-?\d+)")
 GROUPS = (("CAN", "*Can*Count"), ("LIN", "*Lin*Count"))
 MSG_FIELDS = ("message", "header")  # CAN, LIN
 HELLO = "Hello World"  # box start message, copied to stdout
+STATUS_RE = re.compile(r"^\S+\s*:\s*#\s*serial_log_with_ts:")  # log header (box, version), copied to stdout
 TASK_LOAD_EXCLUDE = ("IDLE",)  # tasks not included in the ALL load sum
 TASK_LOAD_COPY = ("Main", "Gsm")  # task load lines copied unchanged to stdout
 TASK_LOAD_HEADER_RE = re.compile(r"^\S+\s*:\s*#\s*task load:\s*(?P<count>\d+)\s+tasks\b")
@@ -203,7 +205,7 @@ def main():
     try:
         analyzer.out("ts2", "class", "nb_msg_per_second", "nb_matches_per_second")
         for lineno, line in enumerate(f, 1):
-            if HELLO in line:  # box start message, copied unchanged
+            if HELLO in line or STATUS_RE.match(line):  # box start message / log header, copied unchanged
                 print(line.rstrip("\r\n"))
                 continue
             if task_load.add(line):
